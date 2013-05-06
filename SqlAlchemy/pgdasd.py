@@ -7,6 +7,7 @@ Created on 11/04/2013
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey
+import random
 
 Base = declarative_base()
 
@@ -89,8 +90,8 @@ class Pgdasd_01000(Base):
     PGDASD_01000_VDAS          = Column(Numeric(14,2))
         
     
-    def setPgdasd_01000(self, line):     
-        #self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO           
+    def setPgdasd_01000(self, line, pgdasd):     
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO           
         self.PGDASD_01000_NRPAGTO       = line[1]
         self.PGDASD_01000_PRINC         = line[2]
         self.PGDASD_01000_MULTA         = line[3]
@@ -109,9 +110,8 @@ class Pgdasd_01500(Base):
     PGDASD_01500_RBSN_VALOR    = Column(Numeric(14,2))
         
     
-    def setPgdasd_01500(self, line):     
-        #self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO  
-        self.PGDASD_00000_ID_DECLARACAO = '00089109201210001'         
+    def setPgdasd_01500(self, line, pgdasd):     
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO                  
         self.PGDASD_01500_RBSN_PA       = line[1]
         self.PGDASD_01500_RBSN_VALOR    = line[2]            
         return self         
@@ -125,8 +125,8 @@ class Pgdasd_01501(Base):
     PGDASD_01501_RBSN_VALOR    = Column(Numeric(14,2))
         
     
-    def setPgdasd_01501(self, line):     
-        #self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO           
+    def setPgdasd_01501(self, line, pgdasd):     
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO           
         self.PGDASD_01501_RBSN_PA       = line[1]
         self.PGDASD_01501_RBSN_VALOR    = line[2]            
         return self
@@ -139,8 +139,8 @@ class Pgdasd_01502(Base):
     PGDASD_01502_RBSN_EXT_VALOR    = Column(Numeric(14,2))
         
     
-    def setPgdasd_01502(self, line):     
-        #self.PGDASD_00000_ID_DECLARACAO  = pgdasd.PGDASD_00000_ID_DECLARACAO           
+    def setPgdasd_01502(self, line, pgdasd):     
+        self.PGDASD_00000_ID_DECLARACAO  = pgdasd.PGDASD_00000_ID_DECLARACAO           
         self.PGDASD_01502_RBSN_EXT_PA    = line[1]
         self.PGDASD_01502_RBSN_EXT_VALOR = line[2]            
         return self
@@ -163,9 +163,9 @@ class Pgdasd_02000(Base):
     PGDASD_02000_RBTAA_EXTO    = Column(Numeric(14,2))
         
     
-    def setPgdasd_02000(self, line):     
-        #self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO           
-        self.PGDASD_02000_ID            = 1 #Verificar como será gerado o ID
+    def setPgdasd_02000(self, line, pgdasd, id_02000):     
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO           
+        self.PGDASD_02000_ID            = id_02000 #Verificar como será gerado o ID
         self.PGDASD_02000_RBT12         = line[1]
         self.PGDASD_02000_RBTAA         = line[2]
         self.PGDASD_02000_RBA           = line[3]
@@ -194,7 +194,8 @@ class Pgdasd_03000(Base):
     PGDASD_03000_PREX2             = Column(Numeric(4,10))
             
     
-    def setPgdasd_03000(self, line):                     
+    def setPgdasd_03000(self, line, pgdasd):                     
+        self.PGDASD_00000_ID_DECLARACAO     = pgdasd.PGDASD_00000_ID_DECLARACAO
         self.PGDASD_03000_CNPJ              = line[1]
         self.PGDASD_03000_UF                = line[2]
         self.PGDASD_03000_COD_TOM           = line[3]
@@ -222,9 +223,11 @@ class Pgdasd_03100(Base):
     PGDASD_03100_VLTOTAL           = Column(Numeric(14,2))
        
     
-    def setPgdasd_03100(self, line):                     
-        self.PGDASD_03100_TIPO    = line[1]
-        self.PGDASD_03100_VLTOTAL = line[2]   
+    def setPgdasd_03100(self, line, pgdasd, pgdasd_03000):               
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = line[1]
+        self.PGDASD_03100_VLTOTAL       = line[2]   
         
         self.Pgdasd_03110.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO #Verificar se vai dar erro aqui
         self.Pgdasd_03110.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
@@ -285,8 +288,12 @@ class Pgdasd_03110(Base):
     PGDASD_03110_MAIORTRIBUTO    = Column(Numeric(14,3))
             
     
-    def setPgdasd_03110(self, line):        
-        self.PGDASD_03110_ID = 1 #Verificar como será gerado este ID            
+    def setPgdasd_03110(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03110):
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        
+        self.PGDASD_03110_ID              = id_03110 #Verificar como será gerado este ID            
         self.PGDASD_03110_UF              = line[1]
         self.PGDASD_03110_COD_TOM         = line[2]
         self.PGDASD_03110_VALOR           = line[3]
@@ -365,8 +372,14 @@ class Pgdasd_03111(Base):
     PGDASD_03111_DIFERENCA       = Column(Numeric(14,2))
     PGDASD_03111_MAIORTRIBUTO    = Column(Numeric(14,3))
     
-    def setPgdasd_03111(self, line):    
-        self.PGDASD_03111_ID = 1 #Verificar como será gerado este ID                 
+    def setPgdasd_03111(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03110, id_03111):    
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03110_ID            = pgdasd_03110.PGDASD_03110_ID
+        
+        self.PGDASD_03111_ID              = id_03111 #Verificar como será gerado este ID                 
         self.PGDASD_03111_ALIQAPUR        = line[1]
         self.PGDASD_03111_VLIMPOSTO       = line[2]
         self.PGDASD_03111_ALIQUOTA_COFINS = line[3]
@@ -419,8 +432,14 @@ class Pgdasd_03112(Base):
     PGDASD_03112_VALOR_PIS       = Column(Numeric(14,3))
     PGDASD_03112_ALIQUOTA_PIS    = Column(Numeric(14,3))
     
-    def setPgdasd_03112(self, line):    
-        self.PGDASD_03112_ID = 1 #Verificar como será gerado este ID                 
+    def setPgdasd_03112(self, line,  pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03110, id_03112): 
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03110_ID            = pgdasd_03110.PGDASD_03110_ID
+           
+        self.PGDASD_03112_ID              = id_03112 #Verificar como será gerado este ID                 
         self.PGDASD_03112_VALOR           = line[1]
         self.PGDASD_03112_RED             = line[2]
         self.PGDASD_03112_ALIQAPUR        = line[3]
@@ -470,8 +489,13 @@ class Pgdasd_03120(Base):
     PGDASD_03120_VALOR_PIS       = Column(Numeric(14,3))    
             
     
-    def setPgdasd_03120(self, line):   
-        self.PGDASD_03120_ID = 1 #Verificar como será gerado este ID                  
+    def setPgdasd_03120(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03120):   
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        
+        self.PGDASD_03120_ID              = id_03120 #Verificar como será gerado este ID                  
         self.PGDASD_03120_ALIQAPUR        = line[1]
         self.PGDASD_03120_ALIQUOTA_COFINS = line[2]
         self.PGDASD_03120_VALOR_COFINS    = line[3]
@@ -533,8 +557,14 @@ class Pgdasd_03121(Base):
     PGDASD_03121_VALOR_PIS       = Column(Numeric(14,3))
     
     
-    def setPgdasd_03121(self, line):   
-        self.PGDASD_03121_ID = 1 #Verificar como será gerado este ID                  
+    def setPgdasd_03121(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03120, id_03121):  
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03120_ID            = pgdasd_03120.PGDASD_03120_ID
+         
+        self.PGDASD_03121_ID              = id_03121 #Verificar como será gerado este ID                  
         self.PGDASD_03121_ALIQAPUR        = line[1]
         self.PGDASD_03121_ALIQUOTA_COFINS = line[2]
         self.PGDASD_03121_VALOR_COFINS    = line[3]
@@ -580,8 +610,14 @@ class Pgdasd_03122(Base):
     PGDASD_03122_ALIQUOTA_PIS    = Column(Numeric(14,3))
     PGDASD_03122_VALOR_PIS       = Column(Numeric(14,3))    
     
-    def setPgdasd_03122(self, line):    
-        self.PGDASD_03122_ID = 1 #Verificar como será gerado este ID                 
+    def setPgdasd_03122(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03120, id_03122):    
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03120_ID            = pgdasd_03120.PGDASD_03120_ID
+        
+        self.PGDASD_03122_ID              = id_03122 #Verificar como será gerado este ID                 
         self.PGDASD_03122_ALIQAPUR        = line[1]
         self.PGDASD_03122_ALIQUOTA_COFINS = line[2]
         self.PGDASD_03122_VALOR_COFINS    = line[3]
@@ -627,8 +663,13 @@ class Pgdasd_03130(Base):
     PGDASD_03130_VALOR_PIS       = Column(Numeric(14,3))
             
     
-    def setPgdasd_03130(self, line):    
-        self.PGDASD_03130_ID = 1 #Verificar como será gerado este ID                 
+    def setPgdasd_03130(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03130):    
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        
+        self.PGDASD_03130_ID              = id_03130 #Verificar como será gerado este ID                 
         self.PGDASD_03130_ALIQAPUR        = line[1]
         self.PGDASD_03130_ALIQUOTA_COFINS = line[2]
         self.PGDASD_03130_VALOR_COFINS    = line[3]
@@ -669,7 +710,7 @@ class Pgdasd_03131(Base):
     PGDASD_00000_ID_DECLARACAO   = Column(String, ForeignKey('pgdasd.PGDASD_00000_ID_DECLARACAO'))    
     PGDASD_03000_CNPJ            = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
     PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
-    PGDASD_03130_ID              = Column(Integer, ForeignKey('pgdasd_03110.PGDASD_03110_ID'))
+    PGDASD_03130_ID              = Column(Integer, ForeignKey('pgdasd_03130.PGDASD_03130_ID'))
     PGDASD_03131_ID              = Column(Integer, primary_key = True)
     PGDASD_03131_ALIQAPUR        = Column(Numeric(14,2))    
     PGDASD_03131_ALIQUOTA_COFINS = Column(Numeric(14,2))    
@@ -690,8 +731,14 @@ class Pgdasd_03131(Base):
     PGDASD_03131_VALOR_PIS       = Column(Numeric(14,3))
     
     
-    def setPgdasd_03131(self, line):       
-        self.PGDASD_03131_ID = 1 #Verificar como será gerado este ID              
+    def setPgdasd_03131(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03130, id_03131):    
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03130_ID            = pgdasd_03130.PGDASD_03130_ID
+           
+        self.PGDASD_03131_ID              = id_03131 #Verificar como será gerado este ID              
         self.PGDASD_03131_ALIQAPUR        = line[1]
         self.PGDASD_03131_ALIQUOTA_COFINS = line[2]
         self.PGDASD_03131_VALOR_COFINS    = line[3]
@@ -737,8 +784,14 @@ class Pgdasd_03132(Base):
     PGDASD_03132_VALOR_PIS       = Column(Numeric(14,3))
     
     
-    def setPgdasd_03132(self, line):  
-        self.PGDASD_03132_ID = 1 #Verificar como será gerado este ID                   
+    def setPgdasd_03132(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03130, id_03132):  
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_03000_CNPJ          = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO          = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03130_ID            = pgdasd_03130.PGDASD_03130_ID
+        
+        self.PGDASD_03132_ID              = id_03132 #Verificar como será gerado este ID                   
         self.PGDASD_03132_ALIQAPUR        = line[1]
         self.PGDASD_03132_ALIQUOTA_COFINS = line[2]
         self.PGDASD_03132_VALOR_COFINS    = line[3]
@@ -766,7 +819,8 @@ class Pgdasd_03500(Base):
     PGDASD_03500_FSSN_VALOR    = Column(Numeric(14,2))
             
     
-    def setPgdasd_03500(self, line):                     
+    def setPgdasd_03500(self, line, pgdasd):
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO                     
         self.PGDASD_03500_FSSN_PA    = line[1]
         self.PGDASD_03500_FSSN_VALOR = line[2]
                                      
@@ -787,8 +841,11 @@ class Pgdasd_04000(Base):
     PGDASD_04000_CODMUNIC      = Column(String(4))
             
     
-    def setPgdasd_04000(self, line):    
-        self.PGDASD_04000_ID         = 5 #Verificar como vai ser gerado o id                 
+    def setPgdasd_04000(self, line, pgdasd, id_04000):   
+        
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO  
+         
+        self.PGDASD_04000_ID         = id_04000                 
         self.PGDASD_04000_CODRECP    = line[1]
         self.PGDASD_04000_VALORPRINC = line[2]
         self.PGDASD_04000_CODRECM    = line[3]
