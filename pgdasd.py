@@ -1,779 +1,857 @@
-#-*- encoding:utf-8 -*-
+#encoding:utf-8
 '''
 Created on 11/04/2013
 
 @author: Frederico da Silva Santos
 '''
 
-class Pgdasd():
-    '''
-    Identificação do contribuinte e dados da apuração.
-    '''
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, Numeric, ForeignKey
 
-    def __init__(self):
-        # campo 00000
-        self.Pgdasd_00000_ID_Declaracao = ""
-        self.Pgdasd_00000_Num_Recibo = ""
-        self.Pgdasd_00000_Num_Autenticacao = "" 
-        self.Pgdasd_00000_Dt_Transmissao = ""
-        self.Pgdasd_00000_Versao = ""
-        self.Pgdasd_00000_Cnpjmatriz = ""
-        self.Pgdasd_00000_Nome = ""
-        self.Pgdasd_00000_Cod_TOM = ""
-        self.Pgdasd_00000_Optante = ""
-        self.Pgdasd_00000_Abertura= ""
-        self.Pgdasd_00000_PA = ""
-        self.Pgdasd_00000_Rpa = 0.0
-        self.Pgdasd_00000_Razao = 0.000
-        self.Pgdasd_00000_IM = 0.0
-        self.Pgdasd_00000_Operacao = ""
-        self.Pgdasd_00000_Regime = ""
-        self.Pgdasd_00000_RpaC = 0.0
-        self.Pgdasd_00000_Rpa_Int = 0.0         
-        self.Pgdasd_00000_Rpa_Ext = 0.0
-        self.Pgdasd_ultimo02000 = 0.0
-        self.Pgdasd_ultimo04000 = 0.0
-                
-        # campo 01000
+Base = declarative_base()
+
+class Pgdasd(Base):
+    
+    __tablename__ = 'pgdasd'
+    
+    PGDASD_00000_ID               = Column(Integer, primary_key = True)
+    PGDASD_00000_ID_DECLARACAO    = Column(String)
+    PGDASD_00000_NUM_RECIBO       = Column(String)
+    PGDASD_00000_NUM_AUTENTICACAO = Column(String) 
+    PGDASD_00000_DT_TRANSMISSAO   = Column(String)
+    PGDASD_00000_VERSAO           = Column(String)
+    PGDASD_00000_CNPJMATRIZ       = Column(String)
+    PGDASD_00000_NOME             = Column(String)
+    PGDASD_00000_COD_TOM          = Column(String)
+    PGDASD_00000_OPTANTE          = Column(String)
+    PGDASD_00000_ABERTURA         = Column(String)
+    PGDASD_00000_PA               = Column(String)
+    PGDASD_00000_RPA              = Column(Numeric(15,2))
+    PGDASD_00000_RAZAO            = Column(Numeric(15,3))
+    PGDASD_00000_IM               = Column(Numeric(15,2))
+    PGDASD_00000_OPERACAO         = Column(String)
+    PGDASD_00000_REGIME           = Column(String)
+    PGDASD_00000_RPAC             = Column(Numeric(15,2))
+    PGDASD_00000_RPA_INT          = Column(Numeric(15,2))         
+    PGDASD_00000_RPA_EXT          = Column(Numeric(15,2))
+        
+    '''def __init__(self):
         self.Pgdasd_01000 = Pgdasd_01000()
-        
-        # campo 01500
-        self.Pgdasd_01500 = []        
-        
-        # campo 01501
-        self.Pgdasd_01501 = []
-        
-        # campo 01502
-        self.Pgdasd_01502 = []
-        
-        # campo 02000
+        self.Pgdasd_01500 = Pgdasd_01500()        
+        self.Pgdasd_01501 = Pgdasd_01501()
+        self.Pgdasd_01502 = Pgdasd_01502()
         self.Pgdasd_02000 = Pgdasd_02000()
-        
-        # campo 03000
-        self.Pgdasd_03000 = []
-        
-        self.Pgdasd_03100 = []
-                    
-        self.Pgdasd_03110 = []        
-        self.Pgdasd_03111 = Pgdasd_03111()        
-        self.Pgdasd_03112 = []        
-        
-        self.Pgdasd_03120 = []
-        self.Pgdasd_03121 = []
-        self.Pgdasd_03122 = []
-        
-        self.Pgdasd_03130 = []
-        self.Pgdasd_03131 = []
-        self.Pgdasd_03132 = []
-               
-        # campo 03500
+        self.Pgdasd_03000 = Pgdasd_03000()
         self.Pgdasd_03500 = Pgdasd_03500()
-        
-        # campo 04000
         self.Pgdasd_04000 = Pgdasd_04000()
-        
+    '''
     def setPgdasd_00000(self, line):
-        self.Pgdasd_00000_ID_Declaracao    = line[1]
-        self.Pgdasd_00000_Num_Recibo       = line[2]
-        self.Pgdasd_00000_Num_Autenticacao = line[3]
-        self.Pgdasd_00000_Dt_Transmissao   = line[4]
-        self.Pgdasd_00000_Versao           = line[5]
-        self.Pgdasd_00000_Cnpjmatriz       = line[6]
-        self.Pgdasd_00000_Nome             = line[7]
-        self.Pgdasd_00000_Cod_TOM          = line[8]
-        self.Pgdasd_00000_Optante          = line[9]
-        self.Pgdasd_00000_Abertura         = line[10]
-        self.Pgdasd_00000_PA               = line[11]
-        self.Pgdasd_00000_Rpa              = line[12]
-        self.Pgdasd_00000_Razao            = line[13]
-        self.Pgdasd_00000_IM               = line[14]
-        self.Pgdasd_00000_Operacao         = line[15]
-        self.Pgdasd_00000_Regime           = line[16]
-        if line[17] == '':
-            self.Pgdasd_00000_RpaC = 0.0
-        else:    
-            self.Pgdasd_00000_RpaC         = line[17]
-        self.Pgdasd_00000_Rpa_Int          = line[18]
-        self.Pgdasd_00000_Rpa_Ext          = line[19]        
-        return self    
-    
-class Pgdasd_01000():
-    '''
-    Informações do valor apurado pelo cálculo.
-    '''
-    def __init__(self):
-        self.Nrpagto   = ""
-        self.Princ     = 0.0
-        self.Multa     = 0.0
-        self.Juros     = 0.0
-        self.Tdevido   = 0.0
-        self.Dtvenc    = ""
-        self.Dtvalcalc = ""
-        self.Vdas      = 0.0
+        self.PGDASD_00000_ID_DECLARACAO    = line[1]
+        self.PGDASD_00000_NUM_RECIBO       = line[2]
+        self.PGDASD_00000_NUM_AUTENTICACAO = line[3]
+        self.PGDASD_00000_DT_TRANSMISSAO   = line[4]
+        self.PGDASD_00000_VERSAO           = line[5]
+        self.PGDASD_00000_CNPJMATRIZ       = line[6]
+        self.PGDASD_00000_NOME             = line[7]
+        self.PGDASD_00000_COD_TOM          = line[8]
+        self.PGDASD_00000_OPTANTE          = line[9]
+        self.PGDASD_00000_ABERTURA         = line[10]
+        self.PGDASD_00000_PA               = line[11]
+        self.PGDASD_00000_RPA              = line[12]
+        self.PGDASD_00000_RAZAO            = line[13]
+        self.PGDASD_00000_IM               = line[14]
+        self.PGDASD_00000_OPERACAO         = line[15]
+        self.PGDASD_00000_REGIME           = line[16]
+        self.PGDASD_00000_RPAC             = line[17]
+        self.PGDASD_00000_RPA_INT          = line[18]
+        self.PGDASD_00000_RPA_EXT          = line[19]     
         
-    def setPgdasd_01000(self, line):
-        self.Nrpagto   = line[1]
-        self.Princ     = line[2]
-        self.Multa     = line[3]
-        self.Juros     = line[4]
-        self.Tdevido   = line[5]
-        self.Dtvenc    = line[6]
-        self.Dtvalcalc = line[7]
-        self.Vdas      = line[8]        
+        '''self.Pgdasd_01000.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
+        self.Pgdasd_01500.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO    
+        self.Pgdasd_01501.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
+        self.Pgdasd_01502.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
+        self.Pgdasd_02000.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
+        self.Pgdasd_03000.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
+        self.Pgdasd_03500.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
+        self.Pgdasd_04000.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
+        '''
         return self
     
-class Pgdasd_01500():
-    '''
-    Informações de receitas brutas de períodos anteriores à opção.
-    '''
-    def __init__(self):
-        self.rbsn_PA    = ""
-        self.rbsn_valor = 0.0        
+class Pgdasd_01000(Base):
+    __tablename__ = 'pgdasd_01000'
+    
+    PGDASD_00000_ID             =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))   
+    PGDASD_01000_NRPAGTO        = Column(String, primary_key = True)
+    PGDASD_01000_PRINC          = Column(Numeric(14,2))
+    PGDASD_01000_MULTA          = Column(Numeric(14,2))
+    PGDASD_01000_JUROS          = Column(Numeric(14,2))
+    PGDASD_01000_TDEVIDO        = Column(Numeric(14,2))
+    PGDASD_01000_DTVENC         = Column(String(8))
+    PGDASD_01000_DTVALCALC      = Column(String(8))
+    PGDASD_01000_VDAS           = Column(Numeric(14,2))
         
-    def setPgdasd_01500(self, line):
-        self.rbsn_PA    = line[1]
-        self.rbsn_valor = line[2]        
+    
+    def setPgdasd_01000(self, line, pgdasd):     
+        #self.PGDASD_00000_ID_DECLARACAO  = pgdasd.PGDASD_00000_ID_DECLARACAO            
+        self.PGDASD_00000_ID             = pgdasd.PGDASD_00000_ID
+        self.PGDASD_01000_NRPAGTO        = line[1]
+        self.PGDASD_01000_PRINC          = line[2]
+        self.PGDASD_01000_MULTA          = line[3]
+        self.PGDASD_01000_JUROS          = line[4]
+        self.PGDASD_01000_TDEVIDO        = line[5]
+        self.PGDASD_01000_DTVENC         = line[6]
+        self.PGDASD_01000_DTVALCALC      = line[7]
+        self.PGDASD_01000_VDAS           = line[8]        
+        return self
+
+class Pgdasd_01500(Base):
+    __tablename__ = 'pgdasd_01500'
+    
+    PGDASD_00000_ID         =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_01500_RBSN_PA    = Column(String(6), primary_key = True)    
+    PGDASD_01500_RBSN_VALOR = Column(Numeric(14,2))
+        
+    
+    def setPgdasd_01500(self, line, pgdasd):             
+        self.PGDASD_00000_ID             = pgdasd.PGDASD_00000_ID
+        self.PGDASD_00000_DT_TRANSMISSAO = pgdasd.PGDASD_00000_DT_TRANSMISSAO
+        self.PGDASD_00000_OPERACAO       = pgdasd.PGDASD_00000_OPERACAO               
+        self.PGDASD_01500_RBSN_PA        = line[1]
+        self.PGDASD_01500_RBSN_VALOR     = line[2]            
+        return self         
+    
+        
+class Pgdasd_01501(Base):
+    __tablename__ = 'pgdasd_01501'
+    
+    PGDASD_00000_ID         =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))    
+    PGDASD_01501_RBSN_PA    = Column(String(6), primary_key = True)    
+    PGDASD_01501_RBSN_VALOR = Column(Numeric(14,2))
+        
+    
+    def setPgdasd_01501(self, line, pgdasd):             
+        self.PGDASD_00000_ID         = pgdasd.PGDASD_00000_ID
+        self.PGDASD_01501_RBSN_PA    = line[1]
+        self.PGDASD_01501_RBSN_VALOR = line[2]            
+        return self
+
+class Pgdasd_01502(Base):
+    __tablename__ = 'pgdasd_01502'
+    
+    PGDASD_00000_ID             =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_01502_RBSN_EXT_PA    = Column(String(6), primary_key = True)    
+    PGDASD_01502_RBSN_EXT_VALOR = Column(Numeric(14,2))
+        
+    
+    def setPgdasd_01502(self, line, pgdasd):                 
+        self.PGDASD_00000_ID             = pgdasd.PGDASD_00000_ID
+        self.PGDASD_01502_RBSN_EXT_PA    = line[1]
+        self.PGDASD_01502_RBSN_EXT_VALOR = line[2]            
         return self
     
-class Pgdasd_01501():
-    '''
-    Informações de receitas brutas de períodos anteriores à opção no mercado interno.
-    0 a 23 ocorrências - Uma ocorrência por linha
-    '''
-    def __init__(self):
-        self.rbsn_PA    = ""
-        self.rbsn_valor = 0.0        
+class Pgdasd_02000(Base):
+    __tablename__ = 'pgdasd_02000'
         
-    def setPgdasd_01501(self, line):
-        self.rbsn_PA    = line[1]
-        self.rbsn_valor = line[2]        
+    PGDASD_00000_ID            =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_02000_ID            = Column(Integer, primary_key = True)
+    PGDASD_02000_RBT12         = Column(Numeric(14,2))
+    PGDASD_02000_RBTAA         = Column(Numeric(14,2))
+    PGDASD_02000_RBA           = Column(Numeric(14,2))
+    PGDASD_02000_RBT12O        = Column(Numeric(14,2))
+    PGDASD_02000_RBTAAO        = Column(String(8))
+    PGDASD_02000_ICMS          = Column(String(8))
+    PGDASD_02000_ISS           = Column(Numeric(14,2))
+    PGDASD_02000_RBTAA_INT     = Column(Numeric(14,2))
+    PGDASD_02000_RBTAA_INTO    = Column(Numeric(14,2))
+    PGDASD_02000_RBTAA_EXT     = Column(Numeric(14,2))
+    PGDASD_02000_RBTAA_EXTO    = Column(Numeric(14,2))
+        
+    
+    def setPgdasd_02000(self, line, pgdasd, id_02000):             
+        self.PGDASD_00000_ID            = pgdasd.PGDASD_00000_ID
+        self.PGDASD_02000_ID            = id_02000 
+        self.PGDASD_02000_RBT12         = line[1]
+        self.PGDASD_02000_RBTAA         = line[2]
+        self.PGDASD_02000_RBA           = line[3]
+        self.PGDASD_02000_RBT12O        = line[4]
+        self.PGDASD_02000_RBTAAO        = line[5]
+        self.PGDASD_02000_ICMS          = line[6]
+        self.PGDASD_02000_ISS           = line[7]        
+        self.PGDASD_02000_RBTAA_INT     = line[8]
+        self.PGDASD_02000_RBTAA_INTO    = line[9]
+        self.PGDASD_02000_RBTAA_EXT     = line[10]
+        self.PGDASD_02000_RBTAA_EXTO    = line[11]        
         return self
 
-class Pgdasd_01502():
-    '''
-    Informações de receitas brutas de períodos anteriores à opção no mercado externo.
-    0 a 23 ocorrências - Uma ocorrência por linha
-    '''
-    def __init__(self):
-        self.Rbsn_Ext_PA    = ""
-        self.Rbsn_Ext_valor = 0.0        
+class Pgdasd_03000(Base):
+    __tablename__ = 'pgdasd_03000'
         
-    def setPgdasd_01502(self, line):
-        self.Rbsn_Ext_PA    = line[1]
-        self.Rbsn_Ext_valor = line[2]        
-        return self
-
-class Pgdasd_02000():
-    '''
-    Receitas brutas de períodos anteriores, valor original e tributos fixos.
-    1 ocorrência
-    '''
-    def __init__(self):
-        self.Id     = 0
-        self.rbt12  = 0.0    
-        self.Rbtaa  = 0.0
-        self.Rba    = 0.0 
-        self.rbt12o = 0.0
-        self.Rbtaao = 0.0
-        self.ICMS   = 0.0
-        self.ISS    = 0.0
-        self.Rbtaa_Int = 0.0
-        self.Rbtaa_Into = 0.0    
-        self.Rbtaa_Ext = 0.0
-        self.Rbtaa_Exto = 0.0        
-        
-    def setPgdasd_02000(self, line):
-        #self.Id         = line[1]
-        self.rbt12      = line[1]    
-        self.Rbtaa      = line[2]
-        self.Rba        = line[3]
-        self.rbt12o     = line[4]
-        self.Rbtaao     = line[5]
-        if line[6] == '':
-            self.ICMS   = 0.00
-        else:
-            self.ICMS       = line[6]
-        if line[7] == '':
-            self.ISS    = 0.00
-        else:
-            self.ISS    = line[7]
-        self.Rbtaa_Int  = line[8]
-        self.Rbtaa_Into = line[9]   
-        self.Rbtaa_Ext  = line[10] 
-        self.Rbtaa_Exto = line[11]        
-        return self
-
-class Pgdasd_03000():
-    '''
-    Informações de cada estabelecimento filial.
-    Ocorrência - N:1 – de 1 (apenas a matriz) até o número máximo de estabelecimento (matriz mais as filiais)
-    '''
-    def __init__(self):
-        self.CNPJ              = ""
-        self.Uf                = ""    
-        self.Cod_TOM           = ""
-        self.Vltotal           = 0.0 
-        self.IME               = 0.0
-        self.Limite            = 0.0
-        self.LimUltrapassadoPA = ""
-        self.prex1             = 0.0        
-        self.prex2             = 0.0
-        self.Pgdasd_03100      = []
+    PGDASD_00000_ID                = Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    #PGDASD_03000_ID                = Column(Integer, primary_key = True)
+    PGDASD_03000_CNPJ              = Column(String(14), primary_key = True)
+    PGDASD_03000_UF                = Column(String(2))
+    PGDASD_03000_COD_TOM           = Column(String(4))
+    PGDASD_03000_VLTOTAL           = Column(Numeric(14,2))
+    PGDASD_03000_IME               = Column(Numeric(14,2))
+    PGDASD_03000_LIMITE            = Column(Numeric(14,2))
+    PGDASD_03000_LIMULTRAPASSADOPA = Column(String(1))
+    PGDASD_03000_PREX1             = Column(Numeric(4,10))
+    PGDASD_03000_PREX2             = Column(Numeric(4,10))
+            
+    
+    def setPgdasd_03000(self, line, pgdasd):                             
+        self.PGDASD_00000_ID                = pgdasd.PGDASD_00000_ID
+        #self.PGDASD_03000_ID                = id_03000
+        self.PGDASD_03000_CNPJ              = line[1]
+        self.PGDASD_03000_UF                = line[2]
+        self.PGDASD_03000_COD_TOM           = line[3]
+        self.PGDASD_03000_VLTOTAL           = line[4]
+        self.PGDASD_03000_IME               = line[5]
+        self.PGDASD_03000_LIMITE            = line[6]
+        self.PGDASD_03000_LIMULTRAPASSADOPA = line[7]
+        self.PGDASD_03000_PREX1             = line[8]        
+        self.PGDASD_03000_PREX2             = line[9]   
                 
+        #self.Pgdasd_03100.PGDASD_03000_CNPJ   = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+                 
+        return self
+
+    '''def __init__(self):
+        self.Pgdasd_03100 = Pgdasd_03100()'''
+
+class Pgdasd_03100(Base):
+    __tablename__ = 'pgdasd_03100'
         
-    def setPgdasd_03000(self, line):        
-        self.CNPJ              = line[1]    
-        self.Uf                = line[2]
-        self.Cod_TOM           = line[3]
-        self.Vltotal           = line[4]
-        self.IME               = line[5]
-        self.Limite            = line[6]
-        self.LimUltrapassadoPA = line[7]
-        if line[8] == "":
-            self.prex1 = 0.00
-        else:
-            self.prex1         = line[8]
-        if line[9] == "":
-            self.prex2 = 0.00
-        else:
-            self.prex2         = line[9]
-                           
+    PGDASD_00000_ID      =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ      = Column(String, ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO    = Column(String(2), primary_key = True)
+    PGDASD_03100_VLTOTAL = Column(Numeric(14,2))
+       
+    
+    def setPgdasd_03100(self, line, pgdasd, pgdasd_03000):                       
+        self.PGDASD_00000_ID      = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ    = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO    = line[1]
+        self.PGDASD_03100_VLTOTAL = line[2]   
+                
+        '''self.Pgdasd_03110.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03110.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        
+        #self.Pgdasd_03120.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO #Verificar se vai dar erro aqui
+        self.Pgdasd_03120.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03120.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        
+        #self.Pgdasd_03130.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO #Verificar se vai dar erro aqui
+        self.Pgdasd_03130.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03130.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        '''             
         return self
     
-class Pgdasd_03100():
-    '''
-    Informações de cada atividade selecionada para cada estabelecimento.
-    Ocorrência - N:1 – de 0 (quando nenhum dado é informado para a filial) até 24.
-    '''
-    def __init__(self):
-        self.Tipo    = ""
-        self.Vltotal = 0.0    
+    '''def __init__(self):
         self.Pgdasd_03110 = Pgdasd_03110()
         self.Pgdasd_03120 = Pgdasd_03120()
-        self.Pgdasd_03130 = Pgdasd_03130()
-        #self.Pgdasd_Ultimo03110             = 0
-        #self.Pgdasd_Ultimo03111             = 0 
-        #self.Pgdasd_Ultimo03112             = 0
-                
+    '''
+class Pgdasd_03110(Base):
+    __tablename__ = 'pgdasd_03110'
         
-    def setPgdasd_03100(self, line):        
-        self.Tipo    = line[1]    
-        self.Vltotal = line[2]                       
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03110_ID              = Column(Integer, primary_key = True)
+    PGDASD_03110_UF              = Column(String(2))
+    PGDASD_03110_COD_TOM         = Column(String(4))
+    PGDASD_03110_VALOR           = Column(Numeric(14,2))
+    PGDASD_03110_COFINS          = Column(String(1))
+    PGDASD_03110_CSLL            = Column(String(1))
+    PGDASD_03110_ICMS            = Column(String(1))
+    PGDASD_03110_INSS            = Column(String(1))
+    PGDASD_03110_IPI             = Column(String(1))
+    PGDASD_03110_IRPJ            = Column(String(1))
+    PGDASD_03110_ISS             = Column(String(1))
+    PGDASD_03110_PIS             = Column(String(1))
+    PGDASD_03110_ALIQAPUR        = Column(Numeric(14,3))
+    PGDASD_03110_VLIMPOSTO       = Column(Numeric(14,3))
+    PGDASD_03110_ALIQUOTA_COFINS = Column(Numeric(14,3))
+    PGDASD_03110_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03110_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03110_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03110_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03110_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03110_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03110_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03110_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03110_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03110_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03110_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03110_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03110_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03110_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    PGDASD_03110_VALOR_PIS       = Column(Numeric(14,3))
+    PGDASD_03110_DIFERENCA       = Column(Numeric(14,2))
+    PGDASD_03110_MAIORTRIBUTO    = Column(Numeric(14,3))
+            
+    
+    def setPgdasd_03110(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03110):
+        
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        
+        self.PGDASD_03110_ID              = id_03110            
+        self.PGDASD_03110_UF              = line[1]
+        self.PGDASD_03110_COD_TOM         = line[2]
+        self.PGDASD_03110_VALOR           = line[3]
+        self.PGDASD_03110_COFINS          = line[4]
+        self.PGDASD_03110_CSLL            = line[5]
+        self.PGDASD_03110_ICMS            = line[6]
+        self.PGDASD_03110_INSS            = line[7]
+        self.PGDASD_03110_IPI             = line[8]
+        self.PGDASD_03110_IRPJ            = line[9]
+        self.PGDASD_03110_ISS             = line[10]
+        self.PGDASD_03110_PIS             = line[11]
+        self.PGDASD_03110_ALIQAPUR        = line[12]
+        self.PGDASD_03110_VLIMPOSTO       = line[13]
+        self.PGDASD_03110_ALIQUOTA_COFINS = line[14]
+        self.PGDASD_03110_VALOR_COFINS    = line[15]
+        self.PGDASD_03110_ALIQUOTA_CSLL   = line[16]
+        self.PGDASD_03110_VALOR_CSLL      = line[17]
+        self.PGDASD_03110_ALIQUOTA_ICMS   = line[18]
+        self.PGDASD_03110_VALOR_ICMS      = line[19]
+        self.PGDASD_03110_ALIQUOTA_INSS   = line[20]
+        self.PGDASD_03110_VALOR_INSS      = line[21]
+        self.PGDASD_03110_ALIQUOTA_IPI    = line[22]
+        self.PGDASD_03110_VALOR_IPI       = line[23]
+        self.PGDASD_03110_ALIQUOTA_IRPJ   = line[24]
+        self.PGDASD_03110_VALOR_IRPJ      = line[25]
+        self.PGDASD_03110_ALIQUOTA_ISS    = line[26]
+        self.PGDASD_03110_VALOR_ISS       = line[27]
+        self.PGDASD_03110_ALIQUOTA_PIS    = line[28]
+        self.PGDASD_03110_VALOR_PIS       = line[29]
+        self.PGDASD_03110_DIFERENCA       = line[30]
+        self.PGDASD_03110_MAIORTRIBUTO    = line[31]                
+                
+        '''self.Pgdasd_03111.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03111.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        self.Pgdasd_03111.PGDASD_03110_ID            = self.PGDASD_03110_ID #Verificar se vai dar erro aqui
+        
+        self.Pgdasd_03112.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03112.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        self.Pgdasd_03112.PGDASD_03110_ID            = self.PGDASD_03110_ID #Verificar se vai dar erro aqui
+        '''
         return self
     
-class Pgdasd_03110():
-    '''
-    Informações detalhadas do valor da receita por atividade com percentual (faixa A).
-    Ocorrência - N:1
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.UF              = ""
-        self.Cod_TOM         = ""    
-        self.Valor           = 0.0
-        self.COFINS          = "" 
-        self.CSLL            = ""
-        self.ICMS            = ""
-        self.INSS            = ""
-        self.IPI             = ""
-        self.IRPJ            = ""
-        self.ISS             = ""
-        self.PIS             = ""
-        self.Aliqapur        = 0.0
-        self.Vlimposto       = 0.0
-        self.Aliquota_COFINS = 0.0
-        self.Valor_COFINS    = 0.0
-        self.Aliquota_CSLL   = 0.0
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0        
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0
-        self.Diferenca       = 0.0
-        self.Maiortributo    = 0.0
+    '''def __init__(self):
         self.Pgdasd_03111 = Pgdasd_03111()
-        self.Pgdasd_03112 = Pgdasd_03112()        
-        #self.Pgdasd_Ultimo03111    = 0.0
-        #self.Pgdasd_Ultimo03112    = 0.0
-                
+        self.Pgdasd_03112 = Pgdasd_03112()  
+    '''   
+    
+class Pgdasd_03111(Base):
+    __tablename__ = 'pgdasd_03111'
         
-    def setPgdasd_03110(self, line):        
-        self.UF              = line[1]
-        self.Cod_TOM         = line[2]    
-        self.Valor           = line[3]
-        self.COFINS          = line[4]
-        self.CSLL            = line[5]
-        self.ICMS            = line[6]
-        self.INSS            = line[7]
-        self.IPI             = line[8]
-        self.IRPJ            = line[9]
-        self.ISS             = line[10]
-        self.PIS             = line[11]
-        self.Aliqapur        = line[12]
-        self.Vlimposto       = line[13]
-        self.Aliquota_COFINS = line[14]
-        self.Valor_COFINS    = line[15]
-        self.Aliquota_CSLL   = line[16]
-        self.Valor_CSLL      = line[17]
-        self.Aliquota_ICMS   = line[18]
-        self.Valor_ICMS      = line[19]
-        self.Aliquota_INSS   = line[20]
-        self.Valor_INSS      = line[21]
-        self.Aliquota_IPI    = line[22]        
-        self.Valor_IPI       = line[23]
-        self.Aliquota_IRPJ   = line[24]
-        self.Valor_IRPJ      = line[25]
-        self.Aliquota_ISS    = line[26]
-        self.Valor_ISS       = line[27]
-        self.Aliquota_PIS    = line[28]
-        self.Valor_PIS       = line[29]
-        self.Diferenca       = line[30]
-        self.Maiortributo    = line[31]                   
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03110_ID              = Column(Integer, ForeignKey('pgdasd_03110.PGDASD_03110_ID'))
+    PGDASD_03111_ID              = Column(Integer, primary_key = True)
+    PGDASD_03111_ALIQAPUR        = Column(Numeric(14,2))    
+    PGDASD_03111_VLIMPOSTO       = Column(Numeric(14,2))    
+    PGDASD_03111_ALIQUOTA_COFINS = Column(Numeric(14,3))
+    PGDASD_03111_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03111_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03111_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03111_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03111_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03111_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03111_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03111_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03111_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03111_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03111_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03111_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03111_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03111_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    PGDASD_03111_VALOR_PIS       = Column(Numeric(14,3))
+    PGDASD_03111_DIFERENCA       = Column(Numeric(14,2))
+    PGDASD_03111_MAIORTRIBUTO    = Column(Numeric(14,3))
+    
+    def setPgdasd_03111(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03110, id_03111):    
+                
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03110_ID              = pgdasd_03110.PGDASD_03110_ID
+        
+        self.PGDASD_03111_ID              = id_03111                 
+        self.PGDASD_03111_ALIQAPUR        = line[1]
+        self.PGDASD_03111_VLIMPOSTO       = line[2]
+        self.PGDASD_03111_ALIQUOTA_COFINS = line[3]
+        self.PGDASD_03111_VALOR_COFINS    = line[4]
+        self.PGDASD_03111_ALIQUOTA_CSLL   = line[5]
+        self.PGDASD_03111_VALOR_CSLL      = line[6]
+        self.PGDASD_03111_ALIQUOTA_ICMS   = line[7]
+        self.PGDASD_03111_VALOR_ICMS      = line[8]
+        self.PGDASD_03111_ALIQUOTA_INSS   = line[9]
+        self.PGDASD_03111_VALOR_INSS      = line[10]
+        self.PGDASD_03111_ALIQUOTA_IPI    = line[11]
+        self.PGDASD_03111_VALOR_IPI       = line[12]
+        self.PGDASD_03111_ALIQUOTA_IRPJ   = line[13]
+        self.PGDASD_03111_VALOR_IRPJ      = line[14]
+        self.PGDASD_03111_ALIQUOTA_ISS    = line[15]
+        self.PGDASD_03111_VALOR_ISS       = line[16]
+        self.PGDASD_03111_ALIQUOTA_PIS    = line[17]
+        self.PGDASD_03111_VALOR_PIS       = line[18]
+        self.PGDASD_03111_DIFERENCA       = line[19]
+        self.PGDASD_03111_MAIORTRIBUTO    = line[20]        
+        
+class Pgdasd_03112(Base):
+    __tablename__ = 'pgdasd_03112'
+        
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03110_ID              = Column(Integer, ForeignKey('pgdasd_03110.PGDASD_03110_ID'))
+    PGDASD_03112_ID              = Column(Integer, primary_key = True)
+    PGDASD_03112_VALOR           = Column(Numeric(14,2))    
+    PGDASD_03112_RED             = Column(Numeric(14,2))    
+    PGDASD_03112_ALIQAPUR        = Column(Numeric(14,3))
+    PGDASD_03112_VLIMPOSTO       = Column(Numeric(14,3))
+    PGDASD_03112_ALIQUOTA_COFINS = Column(Numeric(14,3))
+    PGDASD_03112_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03112_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03112_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03112_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03112_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03112_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03112_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03112_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03112_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03112_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03112_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03112_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03112_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03112_DIFERENCA       = Column(Numeric(14,2))
+    PGDASD_03112_MAIORTRIBUTO    = Column(Numeric(14,3))
+    PGDASD_03112_VALOR_PIS       = Column(Numeric(14,3))
+    PGDASD_03112_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    
+    def setPgdasd_03112(self, line,  pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03110, id_03112): 
+                
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03110_ID              = pgdasd_03110.PGDASD_03110_ID
+           
+        self.PGDASD_03112_ID              = id_03112                  
+        self.PGDASD_03112_VALOR           = line[1]
+        self.PGDASD_03112_RED             = line[2]
+        self.PGDASD_03112_ALIQAPUR        = line[3]
+        self.PGDASD_03112_VLIMPOSTO       = line[4]
+        self.PGDASD_03112_ALIQUOTA_COFINS = line[5]
+        self.PGDASD_03112_VALOR_COFINS    = line[6]
+        self.PGDASD_03112_ALIQUOTA_CSLL   = line[7]
+        self.PGDASD_03112_VALOR_CSLL      = line[8]
+        self.PGDASD_03112_ALIQUOTA_ICMS   = line[9]
+        self.PGDASD_03112_VALOR_ICMS      = line[10]
+        self.PGDASD_03112_ALIQUOTA_INSS   = line[11]
+        self.PGDASD_03112_VALOR_INSS      = line[12]
+        self.PGDASD_03112_ALIQUOTA_IPI    = line[13]
+        self.PGDASD_03112_VALOR_IPI       = line[14]
+        self.PGDASD_03112_ALIQUOTA_IRPJ   = line[15]
+        self.PGDASD_03112_VALOR_IRPJ      = line[16]
+        self.PGDASD_03112_ALIQUOTA_ISS    = line[17]
+        self.PGDASD_03112_VALOR_ISS       = line[18]
+        self.PGDASD_03112_ALIQUOTA_PIS    = line[19]
+        self.PGDASD_03112_VALOR_PIS       = line[20]
+        self.PGDASD_03112_DIFERENCA       = line[21]
+        self.PGDASD_03112_MAIORTRIBUTO    = line[22]                
+    
+class Pgdasd_03120(Base):
+    __tablename__ = 'pgdasd_03120'
+    
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03120_ID              = Column(Integer, primary_key = True)
+    PGDASD_03120_ALIQAPUR        = Column(Numeric(14,2))
+    PGDASD_03120_ALIQUOTA_COFINS = Column(Numeric(14,3))
+    PGDASD_03120_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03120_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03120_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03120_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03120_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03120_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03120_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03120_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03120_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03120_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03120_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03120_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03120_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03120_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    PGDASD_03120_VALOR_PIS       = Column(Numeric(14,3))    
+            
+    
+    def setPgdasd_03120(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03120):   
+                
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        
+        self.PGDASD_03120_ID              = id_03120                  
+        self.PGDASD_03120_ALIQAPUR        = line[1]
+        self.PGDASD_03120_ALIQUOTA_COFINS = line[2]
+        self.PGDASD_03120_VALOR_COFINS    = line[3]
+        self.PGDASD_03120_ALIQUOTA_CSLL   = line[4]
+        self.PGDASD_03120_VALOR_CSLL      = line[5]
+        self.PGDASD_03120_ALIQUOTA_ICMS   = line[6]
+        self.PGDASD_03120_VALOR_ICMS      = line[7]
+        self.PGDASD_03120_ALIQUOTA_INSS   = line[8]
+        self.PGDASD_03120_VALOR_INSS      = line[9]
+        self.PGDASD_03120_ALIQUOTA_IPI    = line[10]
+        self.PGDASD_03120_VALOR_IPI       = line[11]
+        self.PGDASD_03120_ALIQUOTA_IRPJ   = line[12]
+        self.PGDASD_03120_VALOR_IRPJ      = line[13]
+        self.PGDASD_03120_ALIQUOTA_ISS    = line[14]
+        self.PGDASD_03120_VALOR_ISS       = line[15]
+        self.PGDASD_03120_ALIQUOTA_PIS    = line[16]
+        self.PGDASD_03120_VALOR_PIS       = line[17]      
+                
+        '''self.Pgdasd_03121.PGDASD_03000_CNPJ            = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03121.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        self.Pgdasd_03121.PGDASD_03120_ID            = self.PGDASD_03120_ID #Verificar se vai dar erro aqui
+                
+        self.Pgdasd_03122.PGDASD_03000_CNPJ            = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03122.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        self.Pgdasd_03122.PGDASD_03120_ID            = self.PGDASD_03120_ID #Verificar se vai dar erro aqui
+        '''                    
         return self
     
-class Pgdasd_03111():
-    '''
-    Informação do valor de receita com isenção (faixa A).        
-    Ocorrência - 1:1 – pode não ocorrer
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.Aliqapur        = 0.0
-        self.Vlimposto       = 0.0    
-        self.Aliquota_COFINS = 0.0
-        self.Valor_COFINS    = 0.0
-        self.Aliquota_CSLL   = 0.0
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0
-        self.Diferenca       = 0.0
-        self.Maiortributo    = 0.0        
-                
-        
-    def setPgdasd_03111(self, line):        
-        self.Aliqapur        = line[1]
-        self.Vlimposto       = line[2]    
-        self.Aliquota_COFINS = line[3]
-        self.Valor_COFINS    = line[4]
-        self.Aliquota_CSLL   = line[5]
-        self.Valor_CSLL      = line[6]
-        self.Aliquota_ICMS   = line[7]
-        self.Valor_ICMS      = line[8]
-        self.Aliquota_INSS   = line[9]
-        self.Valor_INSS      = line[10]
-        self.Aliquota_IPI    = line[11]
-        self.Valor_IPI       = line[12]
-        self.Aliquota_IRPJ   = line[13]
-        self.Valor_IRPJ      = line[14]
-        self.Aliquota_ISS    = line[15]
-        self.Valor_ISS       = line[16]
-        self.Aliquota_PIS    = line[17]
-        self.Valor_PIS       = line[18]
-        self.Diferenca       = line[19]
-        self.Maiortributo    = line[20]
-        return self
-
-class Pgdasd_03112():
-    '''
-    Informações detalhadas do valor da receita por atividade com percentual (faixa A).        
-    Ocorrência - N:1 – pode não ocorrer
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.Valor           = 0.0
-        self.Red             = 0.0    
-        self.Aliqapur        = 0.0
-        self.Vlimposto       = 0.0
-        self.Aliquota_COFINS = 0.0
-        self.Valor_COFINS    = 0.0
-        self.Aliquota_CSLL   = 0.0
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0        
-        self.Diferenca       = 0.0
-        self.Maiortributo    = 0.0
-                
-        
-    def setPgdasd_03112(self, line):    
-        self.Id              = 50            
-        self.Valor           = line[1]
-        self.Red             = line[2]    
-        self.Aliqapur        = line[3]
-        self.Vlimposto       = line[4]
-        self.Aliquota_COFINS = line[5]
-        self.Valor_COFINS    = line[6]
-        self.Aliquota_CSLL   = line[7]
-        self.Valor_CSLL      = line[8]
-        self.Aliquota_ICMS   = line[9]
-        self.Valor_ICMS      = line[10]
-        self.Aliquota_INSS   = line[11]
-        self.Valor_INSS      = line[12]
-        self.Aliquota_IPI    = line[13]
-        self.Valor_IPI       = line[14]
-        self.Aliquota_IRPJ   = line[15]
-        self.Valor_IRPJ      = line[16]
-        self.Aliquota_ISS    = line[17]
-        self.Valor_ISS       = line[18]
-        self.Aliquota_PIS    = line[19]
-        self.Valor_PIS       = line[20]       
-        self.Diferenca       = line[21]
-        self.Maiortributo    = line[22]
-        return self
-
-
-class Pgdasd_03120():
-    '''
-    Informações detalhadas do valor da receita por atividade com percentual (faixa B).
-    Ocorrência - N:1
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.Aliqapur        = 0.0
-        self.Aliquota_COFINS = 0.0    
-        self.Valor_COFINS    = 0.0        
-        self.Aliquota_CSLL   = 0.0
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0        
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0        
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0    
+    '''def __init__(self):
         self.Pgdasd_03121 = Pgdasd_03121()
-        self.Pgdasd_03122 = Pgdasd_03122()    
-        #self.Pgdasd_Ultimo03121    = 0.0
-        #self.Pgdasd_Ultimo03122       = 0.0
-        
-                
-        
-    def setPgdasd_03120(self, line):        
-        self.Aliqapur        = line[1]
-        self.Aliquota_COFINS = line[2]    
-        self.Valor_COFINS    = line[3]        
-        self.Aliquota_CSLL   = line[4]
-        self.Valor_CSLL      = line[5]
-        self.Aliquota_ICMS   = line[6]
-        self.Valor_ICMS      = line[7]
-        self.Aliquota_INSS   = line[8]        
-        self.Valor_INSS      = line[9]
-        self.Aliquota_IPI    = line[10]
-        self.Valor_IPI       = line[11]
-        self.Aliquota_IRPJ   = line[12]
-        self.Valor_IRPJ      = line[13]        
-        self.Aliquota_ISS    = line[14]
-        self.Valor_ISS       = line[15]
-        self.Aliquota_PIS    = line[16]
-        self.Valor_PIS       = line[17]                   
-        return self
+        self.Pgdasd_03122 = Pgdasd_03122()
+    '''
+class Pgdasd_03121(Base):
+    __tablename__ = 'pgdasd_03121'
     
-class Pgdasd_03121():
-    '''
-    Informação do valor de receita com isenção (faixa B).        
-    Ocorrência - 1:1 – pode não ocorrer
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.Aliqapur        = 0.0
-        self.Aliquota_COFINS = 0.0    
-        self.Valor_COFINS    = 0.0
-        self.Aliquota_CSLL   = 0.0
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0            
-                
-        
-    def setPgdasd_03121(self, line):                
-        self.Aliqapur        = line[1]
-        self.Aliquota_COFINS = line[2]    
-        self.Valor_COFINS    = line[3]
-        self.Aliquota_CSLL   = line[4]
-        self.Valor_CSLL      = line[5]
-        self.Aliquota_ICMS   = line[6]
-        self.Valor_ICMS      = line[7]
-        self.Aliquota_INSS   = line[8]
-        self.Valor_INSS      = line[9]
-        self.Aliquota_IPI    = line[10]
-        self.Valor_IPI       = line[11]
-        self.Aliquota_IRPJ   = line[12]
-        self.Valor_IRPJ      = line[13]
-        self.Aliquota_ISS    = line[14]
-        self.Valor_ISS       = line[15]
-        self.Aliquota_PIS    = line[16]
-        self.Valor_PIS       = line[17]
-        return self
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03120_ID              = Column(Integer, ForeignKey('pgdasd_03120.PGDASD_03120_ID'))
+    PGDASD_03121_ID              = Column(Integer, primary_key = True)
+    PGDASD_03121_ALIQAPUR        = Column(Numeric(14,2))    
+    PGDASD_03121_ALIQUOTA_COFINS = Column(Numeric(14,2))    
+    PGDASD_03121_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03121_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03121_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03121_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03121_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03121_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03121_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03121_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03121_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03121_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03121_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03121_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03121_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03121_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    PGDASD_03121_VALOR_PIS       = Column(Numeric(14,3))
     
-class Pgdasd_03122():
-    '''
-    Informação do valor da receita por atividade com percentual (faixa B).     
-    Ocorrência - N:1 – pode não ocorre
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.Aliqapur        = 0.0
-        self.Aliquota_COFINS = 0.0    
-        self.Valor_COFINS    = 0.0
-        self.Aliquota_CSLL   = 0.0
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0            
+    
+    def setPgdasd_03121(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03120, id_03121):  
                 
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03120_ID              = pgdasd_03120.PGDASD_03120_ID
+         
+        self.PGDASD_03121_ID              = id_03121                  
+        self.PGDASD_03121_ALIQAPUR        = line[1]
+        self.PGDASD_03121_ALIQUOTA_COFINS = line[2]
+        self.PGDASD_03121_VALOR_COFINS    = line[3]
+        self.PGDASD_03121_ALIQUOTA_CSLL   = line[4]
+        self.PGDASD_03121_VALOR_CSLL      = line[5]
+        self.PGDASD_03121_ALIQUOTA_ICMS   = line[6]
+        self.PGDASD_03121_VALOR_ICMS      = line[7]
+        self.PGDASD_03121_ALIQUOTA_INSS   = line[8]
+        self.PGDASD_03121_VALOR_INSS      = line[9]
+        self.PGDASD_03121_ALIQUOTA_IPI    = line[10]
+        self.PGDASD_03121_VALOR_IPI       = line[11]
+        self.PGDASD_03121_ALIQUOTA_IRPJ   = line[12]
+        self.PGDASD_03121_VALOR_IRPJ      = line[13]
+        self.PGDASD_03121_ALIQUOTA_ISS    = line[14]
+        self.PGDASD_03121_VALOR_ISS       = line[15]
+        self.PGDASD_03121_ALIQUOTA_PIS    = line[16]
+        self.PGDASD_03121_VALOR_PIS       = line[17]
         
-    def setPgdasd_03122(self, line):                
-        self.Aliqapur        = line[1]
-        self.Aliquota_COFINS = line[2]    
-        self.Valor_COFINS    = line[3]
-        self.Aliquota_CSLL   = line[4]
-        self.Valor_CSLL      = line[5]
-        self.Aliquota_ICMS   = line[6]
-        self.Valor_ICMS      = line[7]
-        self.Aliquota_INSS   = line[8]
-        self.Valor_INSS      = line[9]
-        self.Aliquota_IPI    = line[10]
-        self.Valor_IPI       = line[11]
-        self.Aliquota_IRPJ   = line[12]
-        self.Valor_IRPJ      = line[13]
-        self.Aliquota_ISS    = line[14]
-        self.Valor_ISS       = line[15]
-        self.Aliquota_PIS    = line[16]
-        self.Valor_PIS       = line[17]
+        
+class Pgdasd_03122(Base):
+    __tablename__ = 'pgdasd_03122'
+    
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03120_ID              = Column(Integer, ForeignKey('pgdasd_03120.PGDASD_03120_ID'))
+    PGDASD_03122_ID              = Column(Integer, primary_key = True)
+    PGDASD_03122_ALIQAPUR        = Column(Numeric(14,2))    
+    PGDASD_03122_ALIQUOTA_COFINS = Column(Numeric(14,2))    
+    PGDASD_03122_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03122_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03122_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03122_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03122_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03122_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03122_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03122_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03122_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03122_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03122_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03122_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03122_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03122_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    PGDASD_03122_VALOR_PIS       = Column(Numeric(14,3))    
+    
+    def setPgdasd_03122(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03120, id_03122):    
+        
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03120_ID              = pgdasd_03120.PGDASD_03120_ID
+        
+        self.PGDASD_03122_ID              = id_03122                 
+        self.PGDASD_03122_ALIQAPUR        = line[1]
+        self.PGDASD_03122_ALIQUOTA_COFINS = line[2]
+        self.PGDASD_03122_VALOR_COFINS    = line[3]
+        self.PGDASD_03122_ALIQUOTA_CSLL   = line[4]
+        self.PGDASD_03122_VALOR_CSLL      = line[5]
+        self.PGDASD_03122_ALIQUOTA_ICMS   = line[6]
+        self.PGDASD_03122_VALOR_ICMS      = line[7]
+        self.PGDASD_03122_ALIQUOTA_INSS   = line[8]
+        self.PGDASD_03122_VALOR_INSS      = line[9]
+        self.PGDASD_03122_ALIQUOTA_IPI    = line[10]
+        self.PGDASD_03122_VALOR_IPI       = line[11]
+        self.PGDASD_03122_ALIQUOTA_IRPJ   = line[12]
+        self.PGDASD_03122_VALOR_IRPJ      = line[13]
+        self.PGDASD_03122_ALIQUOTA_ISS    = line[14]
+        self.PGDASD_03122_VALOR_ISS       = line[15]
+        self.PGDASD_03122_ALIQUOTA_PIS    = line[16]
+        self.PGDASD_03122_VALOR_PIS       = line[17]
+    
+    
+class Pgdasd_03130(Base):
+    __tablename__ = 'pgdasd_03130'
+    
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03130_ID              = Column(Integer, primary_key = True)
+    PGDASD_03130_ALIQAPUR        = Column(Numeric(14,2))
+    PGDASD_03130_ALIQUOTA_COFINS = Column(Numeric(14,3))
+    PGDASD_03130_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03130_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03130_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03130_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03130_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03130_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03130_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03130_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03130_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03130_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03130_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03130_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03130_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03130_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    PGDASD_03130_VALOR_PIS       = Column(Numeric(14,3))
+            
+    
+    def setPgdasd_03130(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03130):    
+                
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        
+        self.PGDASD_03130_ID              = id_03130                 
+        self.PGDASD_03130_ALIQAPUR        = line[1]
+        self.PGDASD_03130_ALIQUOTA_COFINS = line[2]
+        self.PGDASD_03130_VALOR_COFINS    = line[3]
+        self.PGDASD_03130_ALIQUOTA_CSLL   = line[4]
+        self.PGDASD_03130_VALOR_CSLL      = line[5]
+        self.PGDASD_03130_ALIQUOTA_ICMS   = line[6]
+        self.PGDASD_03130_VALOR_ICMS      = line[7]
+        self.PGDASD_03130_ALIQUOTA_INSS   = line[8]
+        self.PGDASD_03130_VALOR_INSS      = line[9]
+        self.PGDASD_03130_ALIQUOTA_IPI    = line[10]
+        self.PGDASD_03130_VALOR_IPI       = line[11]
+        self.PGDASD_03130_ALIQUOTA_IRPJ   = line[12]
+        self.PGDASD_03130_VALOR_IRPJ      = line[13]
+        self.PGDASD_03130_ALIQUOTA_ISS    = line[14]
+        self.PGDASD_03130_VALOR_ISS       = line[15]
+        self.PGDASD_03130_ALIQUOTA_PIS    = line[16]
+        self.PGDASD_03130_VALOR_PIS       = line[17]         
+        
+        '''self.Pgdasd_03131.PGDASD_03000_CNPJ            = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03131.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        self.Pgdasd_03131.PGDASD_03130_ID            = self.PGDASD_03130_ID #Verificar se vai dar erro aqui
+        
+        self.Pgdasd_03132.PGDASD_03000_CNPJ            = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
+        self.Pgdasd_03132.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
+        self.Pgdasd_03132.PGDASD_03130_ID            = self.PGDASD_03130_ID #Verificar se vai dar erro aqui   
+        '''       
         return self
 
-    
-class Pgdasd_03130():
-    '''
-    Informações detalhadas do valor da receita por atividade com percentual (faixa C).
-    Ocorrência - N:1
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.Aliqapur        = 0.0
-        self.Aliquota_COFINS = 0.0    
-        self.Valor_COFINS    = 0.0
-        self.Aliquota_CSLL   = 0.0         
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0        
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0   
+    '''def __init__(self):
         self.Pgdasd_03131 = Pgdasd_03131()
-        self.Pgdasd_03132 = Pgdasd_03132()     
-        #self.Pgdasd_Ultimo03131    = 0.0
-        #self.Pgdasd_Ultimo03132    = 0.0
-                
+        self.Pgdasd_03132 = Pgdasd_03132()
+    '''
+class Pgdasd_03131(Base):
+    __tablename__ = 'pgdasd_03131'
         
-    def setPgdasd_03130(self, line):        
-        self.Aliqapur        = line[1]
-        self.Aliquota_COFINS = line[2]    
-        self.Valor_COFINS    = line[3]
-        self.Aliquota_CSLL   = line[4]        
-        self.Valor_CSLL      = line[5]
-        self.Aliquota_ICMS   = line[6]
-        self.Valor_ICMS      = line[7]
-        self.Aliquota_INSS   = line[8]
-        self.Valor_INSS      = line[9]
-        self.Aliquota_IPI    = line[10]
-        self.Valor_IPI       = line[11]
-        self.Aliquota_IRPJ   = line[12]
-        self.Valor_IRPJ      = line[13]
-        self.Aliquota_ISS    = line[14]
-        self.Valor_ISS       = line[15]      
-        self.Aliquota_PIS    = line[16]
-        self.Valor_PIS       = line[17]                      
-        return self
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03130_ID              = Column(Integer, ForeignKey('pgdasd_03130.PGDASD_03130_ID'))
+    PGDASD_03131_ID              = Column(Integer, primary_key = True)
+    PGDASD_03131_ALIQAPUR        = Column(Numeric(14,2))    
+    PGDASD_03131_ALIQUOTA_COFINS = Column(Numeric(14,2))    
+    PGDASD_03131_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03131_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03131_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03131_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03131_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03131_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03131_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03131_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03131_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03131_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03131_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03131_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03131_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03131_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    PGDASD_03131_VALOR_PIS       = Column(Numeric(14,3))
     
-class Pgdasd_03131():
-    '''
-    Informação do valor de receita com isenção (faixa C).        
-    Ocorrência - 1:1 – pode não ocorrer
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.Aliqapur        = 0.0
-        self.Aliquota_COFINS = 0.0    
-        self.Valor_COFINS    = 0.0
-        self.Aliquota_CSLL   = 0.0
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0            
-                
-        
-    def setPgdasd_03131(self, line):                
-        self.Aliqapur        = line[1]
-        self.Aliquota_COFINS = line[2]    
-        self.Valor_COFINS    = line[3]
-        self.Aliquota_CSLL   = line[4]
-        self.Valor_CSLL      = line[5]
-        self.Aliquota_ICMS   = line[6]
-        self.Valor_ICMS      = line[7]
-        self.Aliquota_INSS   = line[8]
-        self.Valor_INSS      = line[9]
-        self.Aliquota_IPI    = line[10]
-        self.Valor_IPI       = line[11]
-        self.Aliquota_IRPJ   = line[12]
-        self.Valor_IRPJ      = line[13]
-        self.Aliquota_ISS    = line[14]
-        self.Valor_ISS       = line[15]
-        self.Aliquota_PIS    = line[16]
-        self.Valor_PIS       = line[17]
-        return self
     
-class Pgdasd_03132():
-    '''
-    Informação do valor da receita por atividade com percentual (faixa C).        
-    Ocorrência - 1:1 – pode não ocorrer
-    '''
-    def __init__(self):
-        self.Id              = 0
-        self.Aliqapur        = 0.0
-        self.Aliquota_COFINS = 0.0    
-        self.Valor_COFINS    = 0.0
-        self.Aliquota_CSLL   = 0.0
-        self.Valor_CSLL      = 0.0
-        self.Aliquota_ICMS   = 0.0
-        self.Valor_ICMS      = 0.0
-        self.Aliquota_INSS   = 0.0
-        self.Valor_INSS      = 0.0
-        self.Aliquota_IPI    = 0.0
-        self.Valor_IPI       = 0.0
-        self.Aliquota_IRPJ   = 0.0
-        self.Valor_IRPJ      = 0.0
-        self.Aliquota_ISS    = 0.0
-        self.Valor_ISS       = 0.0
-        self.Aliquota_PIS    = 0.0
-        self.Valor_PIS       = 0.0            
+    def setPgdasd_03131(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03130, id_03131):    
                 
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03130_ID              = pgdasd_03130.PGDASD_03130_ID
+           
+        self.PGDASD_03131_ID              = id_03131              
+        self.PGDASD_03131_ALIQAPUR        = line[1]
+        self.PGDASD_03131_ALIQUOTA_COFINS = line[2]
+        self.PGDASD_03131_VALOR_COFINS    = line[3]
+        self.PGDASD_03131_ALIQUOTA_CSLL   = line[4]
+        self.PGDASD_03131_VALOR_CSLL      = line[5]
+        self.PGDASD_03131_ALIQUOTA_ICMS   = line[6]
+        self.PGDASD_03131_VALOR_ICMS      = line[7]
+        self.PGDASD_03131_ALIQUOTA_INSS   = line[8]
+        self.PGDASD_03131_VALOR_INSS      = line[9]
+        self.PGDASD_03131_ALIQUOTA_IPI    = line[10]
+        self.PGDASD_03131_VALOR_IPI       = line[11]
+        self.PGDASD_03131_ALIQUOTA_IRPJ   = line[12]
+        self.PGDASD_03131_VALOR_IRPJ      = line[13]
+        self.PGDASD_03131_ALIQUOTA_ISS    = line[14]
+        self.PGDASD_03131_VALOR_ISS       = line[15]
+        self.PGDASD_03131_ALIQUOTA_PIS    = line[16]
+        self.PGDASD_03131_VALOR_PIS       = line[17]        
+
+class Pgdasd_03132(Base):
+    __tablename__ = 'pgdasd_03132'
+    
+    
+    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03130_ID              = Column(Integer, ForeignKey('pgdasd_03130.PGDASD_03130_ID'))
+    PGDASD_03132_ID              = Column(Integer, primary_key = True)
+    PGDASD_03132_ALIQAPUR        = Column(Numeric(14,2))    
+    PGDASD_03132_ALIQUOTA_COFINS = Column(Numeric(14,2))    
+    PGDASD_03132_VALOR_COFINS    = Column(Numeric(14,3))
+    PGDASD_03132_ALIQUOTA_CSLL   = Column(Numeric(14,3))
+    PGDASD_03132_VALOR_CSLL      = Column(Numeric(14,3))
+    PGDASD_03132_ALIQUOTA_ICMS   = Column(Numeric(14,3))
+    PGDASD_03132_VALOR_ICMS      = Column(Numeric(14,3))
+    PGDASD_03132_ALIQUOTA_INSS   = Column(Numeric(14,3))
+    PGDASD_03132_VALOR_INSS      = Column(Numeric(14,3))
+    PGDASD_03132_ALIQUOTA_IPI    = Column(Numeric(14,3))
+    PGDASD_03132_VALOR_IPI       = Column(Numeric(14,3))
+    PGDASD_03132_ALIQUOTA_IRPJ   = Column(Numeric(14,3))
+    PGDASD_03132_VALOR_IRPJ      = Column(Numeric(14,3))
+    PGDASD_03132_ALIQUOTA_ISS    = Column(Numeric(14,3))
+    PGDASD_03132_VALOR_ISS       = Column(Numeric(14,3))
+    PGDASD_03132_ALIQUOTA_PIS    = Column(Numeric(14,3))
+    PGDASD_03132_VALOR_PIS       = Column(Numeric(14,3))
+    
+    
+    def setPgdasd_03132(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03130, id_03132):  
         
-    def setPgdasd_03132(self, line):                
-        self.Aliqapur        = line[1]
-        self.Aliquota_COFINS = line[2]    
-        self.Valor_COFINS    = line[3]
-        self.Aliquota_CSLL   = line[4]
-        self.Valor_CSLL      = line[5]
-        self.Aliquota_ICMS   = line[6]
-        self.Valor_ICMS      = line[7]
-        self.Aliquota_INSS   = line[8]
-        self.Valor_INSS      = line[9]
-        self.Aliquota_IPI    = line[10]
-        self.Valor_IPI       = line[11]
-        self.Aliquota_IRPJ   = line[12]
-        self.Valor_IRPJ      = line[13]
-        self.Aliquota_ISS    = line[14]
-        self.Valor_ISS       = line[15]
-        self.Aliquota_PIS    = line[16]
-        self.Valor_PIS       = line[17]
+        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
+        self.PGDASD_03130_ID              = pgdasd_03130.PGDASD_03130_ID
+        
+        self.PGDASD_03132_ID              = id_03132                   
+        self.PGDASD_03132_ALIQAPUR        = line[1]
+        self.PGDASD_03132_ALIQUOTA_COFINS = line[2]
+        self.PGDASD_03132_VALOR_COFINS    = line[3]
+        self.PGDASD_03132_ALIQUOTA_CSLL   = line[4]
+        self.PGDASD_03132_VALOR_CSLL      = line[5]
+        self.PGDASD_03132_ALIQUOTA_ICMS   = line[6]
+        self.PGDASD_03132_VALOR_ICMS      = line[7]
+        self.PGDASD_03132_ALIQUOTA_INSS   = line[8]
+        self.PGDASD_03132_VALOR_INSS      = line[9]
+        self.PGDASD_03132_ALIQUOTA_IPI    = line[10]
+        self.PGDASD_03132_VALOR_IPI       = line[11]
+        self.PGDASD_03132_ALIQUOTA_IRPJ   = line[12]
+        self.PGDASD_03132_VALOR_IRPJ      = line[13]
+        self.PGDASD_03132_ALIQUOTA_ISS    = line[14]
+        self.PGDASD_03132_VALOR_ISS       = line[15]
+        self.PGDASD_03132_ALIQUOTA_PIS    = line[16]
+        self.PGDASD_03132_VALOR_PIS       = line[17]        
+                
+
+class Pgdasd_03500(Base):
+    __tablename__ = 'pgdasd_03500'
+    
+    PGDASD_00000_ID         =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_03500_FSSN_PA    = Column(String(6), primary_key = True)
+    PGDASD_03500_FSSN_VALOR = Column(Numeric(14,2))
+            
+    
+    def setPgdasd_03500(self, line, pgdasd):                        
+        self.PGDASD_00000_ID         = pgdasd.PGDASD_00000_ID
+        self.PGDASD_03500_FSSN_PA    = line[1]
+        self.PGDASD_03500_FSSN_VALOR = line[2]
+                                     
         return self
 
-class Pgdasd_03500():
-    '''
-    Informações referentes à folha de salários.
-    Ocorrência – zero a 12 ocorrências, uma por linha.
-    '''
-    def __init__(self):
-        self.fssn_PA    = ""        
-        self.fssn_valor = 0.0         
-                
+class Pgdasd_04000(Base):
+    __tablename__ = 'pgdasd_04000'
         
-    def setPgdasd_03500(self, line):        
-        self.fssn_PA    = line[1]        
-        self.fssn_valor = line[2]               
-        return self
+    PGDASD_00000_ID            =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_04000_ID            = Column(Integer, primary_key = True)
+    PGDASD_04000_CODRECP       = Column(String(4))
+    PGDASD_04000_VALORPRINC    = Column(Numeric(14,2))
+    PGDASD_04000_CODRECM       = Column(String(4))
+    PGDASD_04000_VALORM        = Column(Numeric(14,2))
+    PGDASD_04000_CODRECJ       = Column(String(4))
+    PGDASD_04000_VALORJ        = Column(Numeric(14,2))
+    PGDASD_04000_UF            = Column(String(2))
+    PGDASD_04000_CODMUNIC      = Column(String(4))
+            
     
-class Pgdasd_04000():
-    '''
-    Informações do perfil
-    Ocorrência – N:1
-    '''
-    def __init__(self):
-        self.Id         = 0        
-        self.codrecp    = ""
-        self.valorprinc = 0.0
-        self.codrecm    = ""
-        self.valorm     = 0.0
-        self.codrecj    = ""
-        self.valorj     = 0.0
-        self.uf         = ""
-        self.codmunic   = ""         
-                
-        
-    def setPgdasd_04000(self, line):        
-        self.codrecp    = line[1]
-        self.valorprinc = line[2]
-        self.codrecm    = line[3]
-        self.valorm     = line[4]
-        self.codrecj    = line[5]
-        self.valorj     = line[6]
-        self.uf         = line[7]
-        self.codmunic   = line[8]            
+    def setPgdasd_04000(self, line, pgdasd, id_04000):   
+          
+        self.PGDASD_00000_ID         = pgdasd.PGDASD_00000_ID         
+        self.PGDASD_04000_ID         = id_04000                 
+        self.PGDASD_04000_CODRECP    = line[1]
+        self.PGDASD_04000_VALORPRINC = line[2]
+        self.PGDASD_04000_CODRECM    = line[3]
+        self.PGDASD_04000_VALORM     = line[4]
+        self.PGDASD_04000_CODRECJ    = line[5]
+        self.PGDASD_04000_VALORJ     = line[6]
+        self.PGDASD_04000_UF         = line[7]
+        self.PGDASD_04000_CODMUNIC   = line[8]
+                                     
         return self
+                
