@@ -23,13 +23,13 @@ class File():
         Verifica se existem arquivos no diretório, se houver, descompacta-os e realiza a importação
         '''        
         self.extractAllFiles(url)
-        self.separatorRegTO(url)
-        url = "arquivos/"
+        self.separatorRegTO(url, 'TO')
+        '''url = "arquivos/"
         for (path, dirs, files) in os.walk(url):            
             for file in files:                                                                                          
                 arquivo = File()                            
                 arquivo.importFile(url, file)
-        
+        '''
     def removeAllFiles(self, url):
         '''
         Remove todos os arquivos do diretório após a importação
@@ -37,7 +37,7 @@ class File():
         for (path, dirs, files) in os.walk(url):
             for file in files:                
                 os.remove(os.path.join(path, file))
-
+    
     def extractAllFiles(self, url):
         '''
         Descompacta todos os arquivos .zip de um diretório
@@ -64,7 +64,7 @@ class File():
             i += 1
         return i
     
-    def separatorRegTO(self, url):
+    def separatorRegTO(self, url, stateReg):
         '''
         Extrai somente os registros do PGDASD referentes a contribuintes do Estado do Tocantins
         '''
@@ -77,7 +77,56 @@ class File():
                 i = 0
                 quantLines = 0
                 linhaTemp = []
-                #newArquivo.write(lines[0])                     
+                linhaTemp03110 = []
+                achou = False
+                newArquivo.write(lines[0])                     
+                for line in lines:                     
+                    linhaTemp.append(line)                               
+                    if line[0:5] == '03000':
+                        state = line[21:23]
+                        print(state)                                              
+                    if line[0:5] == '99999':                
+                        if state == stateReg: # Estado que se deseja filtrar. Neste caso TO                    
+                            newArquivo.writelines(linhaTemp)
+                            quantLines += len(linhaTemp)                                              
+                        else:
+                            #Verifica se existe o estado no registro 03110
+                            if line[0:5] == '03110':
+                                newState = line[7:9]
+                                linhaTemp03110.append(line)#Grava as linhas 03110
+                                if newState == stateReg:
+                                    achou = True
+                            if line[0:5] != '03110' and achou:
+                                newArquivo.writelines(linhaTemp03110)
+                                achou = False
+                                linhaTemp03110 = []
+                                
+                            #linhaTemp = []                
+                        linhaTemp = []                                                            
+                    i = i+1                            
+                newArquivo.write('ZZZZZ|'+str(quantLines+2))                            
+                newArquivo.write('\n')
+                arquivo.close()
+                newArquivo.close()                
+                                                        
+        self.removeAllFiles(url)       
+        
+        
+        
+    def separatorRegTO2(self, url):
+        '''
+        Cópia de segurança do método separatorRegTO
+        '''
+        for(path, dirs, files) in os.walk(url):
+            for file in files:
+                arquivo = open(os.path.join(url,file),'r')                
+                newArquivo = open(os.path.join('arquivos/',file),'w')        
+                lines = arquivo.readlines()        
+                
+                i = 0
+                quantLines = 0
+                linhaTemp = []
+                newArquivo.write(lines[0])                     
                 for line in lines:                     
                     linhaTemp.append(line)                               
                     if line[0:5] == '03000':
@@ -86,15 +135,18 @@ class File():
                     if line[0:5] == '99999':                
                         if state == 'TO':                    
                             newArquivo.writelines(linhaTemp)
-                            quantLines += len(linhaTemp)                    
+                            quantLines += len(linhaTemp)                                              
                         else:
-                            linhaTemp = []                                                                            
-                    i = i+1              
-                newArquivo.write('ZZZZZ|'+str(quantLines+1))
+                            linhaTemp = []                
+                        
+                        linhaTemp = []                                                            
+                    i = i+1                            
+                newArquivo.write('ZZZZZ|'+str(quantLines+2))                            
+                newArquivo.write('\n')
                 arquivo.close()
-                newArquivo.close()
+                newArquivo.close()                
                                                         
-        self.removeAllFiles(url)                
+        self.removeAllFiles(url)         
                   
     
     def getFileName(self, file):
@@ -234,8 +286,8 @@ class File():
                 if line[0] == '99999':    
                     pass                                                                                                                                                                                                     
                 i = i + 1   
-            print("Arquivo "+url+" importado com sucesso")    
-            shutil.copy2(url, "importados/"+file) # Move arquivo para o diretório importados                                            
+            print("Arquivo "+url+" importado com sucesso") 
+            shutil.move(url, os.path.join("importados/",file))                                                       
         #except: 
             #print("Problemas na linha: "+str(i+1))
             #print ('Erro ao abrir o arquivo')
@@ -251,8 +303,8 @@ class Banco():
             engine = create_engine('oracle://siatdesv:desenvolvimento@dbserver')            
             Session = sessionmaker(bind=engine)
             session = Session()
-            session.add(pgdasd)
-            session.commit()
+            session.add(pgdasd)            
+            session.commit()            
             print("Gravando "+pgdasd.__tablename__+" - Linha: "+str(linha))                    
         except:
             session.rollback()
@@ -260,9 +312,9 @@ class Banco():
         
 if __name__ == "__main__":    
     arquivo = File()    
-    url = "recebidos/"   
-    #arquivo.separatorRegTO(url) 
+    url = "recebidos/"       
     arquivo.hasNewFile(url)  
+    #arquivo.separatorRegTO(url)     
     #arquivo.removeAllFiles(url)
     #arquivo.moveAllFiles('testes/', 'arquivos/', ('.tar.gz', 'tmp'))      
     #arquivo.getFileName('arquivos/meus arquivos/agora sim/fred.txt')
