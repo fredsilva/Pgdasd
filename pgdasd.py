@@ -35,16 +35,7 @@ class Pgdasd(Base):
     PGDASD_00000_RPA_INT          = Column(Numeric(15,2))         
     PGDASD_00000_RPA_EXT          = Column(Numeric(15,2))
         
-    '''def __init__(self):
-        self.Pgdasd_01000 = Pgdasd_01000()
-        self.Pgdasd_01500 = Pgdasd_01500()        
-        self.Pgdasd_01501 = Pgdasd_01501()
-        self.Pgdasd_01502 = Pgdasd_01502()
-        self.Pgdasd_02000 = Pgdasd_02000()
-        self.Pgdasd_03000 = Pgdasd_03000()
-        self.Pgdasd_03500 = Pgdasd_03500()
-        self.Pgdasd_04000 = Pgdasd_04000()
-    '''
+    
     def setPgdasd_00000(self, line):
         self.PGDASD_00000_ID_DECLARACAO    = line[1]
         self.PGDASD_00000_NUM_RECIBO       = line[2]
@@ -65,16 +56,7 @@ class Pgdasd(Base):
         self.PGDASD_00000_RPAC             = line[17]
         self.PGDASD_00000_RPA_INT          = line[18]
         self.PGDASD_00000_RPA_EXT          = line[19]     
-        
-        '''self.Pgdasd_01000.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
-        self.Pgdasd_01500.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO    
-        self.Pgdasd_01501.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
-        self.Pgdasd_01502.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
-        self.Pgdasd_02000.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
-        self.Pgdasd_03000.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
-        self.Pgdasd_03500.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
-        self.Pgdasd_04000.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO
-        '''
+                
         return self
     
 class Pgdasd_01000(Base):
@@ -216,8 +198,6 @@ class Pgdasd_03000(Base):
                  
         return self
 
-    '''def __init__(self):
-        self.Pgdasd_03100 = Pgdasd_03100()'''
 
 class Pgdasd_03100(Base):
     __tablename__ = 'pgdasd_03100'
@@ -233,24 +213,9 @@ class Pgdasd_03100(Base):
         self.PGDASD_03000_CNPJ    = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO    = line[1]
         self.PGDASD_03100_VLTOTAL = line[2]   
-                
-        '''self.Pgdasd_03110.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03110.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        
-        #self.Pgdasd_03120.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO #Verificar se vai dar erro aqui
-        self.Pgdasd_03120.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03120.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        
-        #self.Pgdasd_03130.PGDASD_00000_ID_DECLARACAO = self.PGDASD_00000_ID_DECLARACAO #Verificar se vai dar erro aqui
-        self.Pgdasd_03130.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03130.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        '''             
+                  
         return self
-    
-    '''def __init__(self):
-        self.Pgdasd_03110 = Pgdasd_03110()
-        self.Pgdasd_03120 = Pgdasd_03120()
-    '''
+        
 class Pgdasd_03110(Base):
     __tablename__ = 'pgdasd_03110'
         
@@ -330,20 +295,7 @@ class Pgdasd_03110(Base):
         self.PGDASD_03110_DIFERENCA       = line[30]
         self.PGDASD_03110_MAIORTRIBUTO    = line[31]                
                 
-        '''self.Pgdasd_03111.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03111.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        self.Pgdasd_03111.PGDASD_03110_ID            = self.PGDASD_03110_ID #Verificar se vai dar erro aqui
-        
-        self.Pgdasd_03112.PGDASD_03000_CNPJ          = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03112.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        self.Pgdasd_03112.PGDASD_03110_ID            = self.PGDASD_03110_ID #Verificar se vai dar erro aqui
-        '''
         return self
-    
-    '''def __init__(self):
-        self.Pgdasd_03111 = Pgdasd_03111()
-        self.Pgdasd_03112 = Pgdasd_03112()  
-    '''   
     
 class Pgdasd_03111(Base):
     __tablename__ = 'pgdasd_03111'
@@ -515,21 +467,9 @@ class Pgdasd_03120(Base):
         self.PGDASD_03120_VALOR_ISS       = line[15]
         self.PGDASD_03120_ALIQUOTA_PIS    = line[16]
         self.PGDASD_03120_VALOR_PIS       = line[17]      
-                
-        '''self.Pgdasd_03121.PGDASD_03000_CNPJ            = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03121.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        self.Pgdasd_03121.PGDASD_03120_ID            = self.PGDASD_03120_ID #Verificar se vai dar erro aqui
-                
-        self.Pgdasd_03122.PGDASD_03000_CNPJ            = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03122.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        self.Pgdasd_03122.PGDASD_03120_ID            = self.PGDASD_03120_ID #Verificar se vai dar erro aqui
-        '''                    
+                                        
         return self
-    
-    '''def __init__(self):
-        self.Pgdasd_03121 = Pgdasd_03121()
-        self.Pgdasd_03122 = Pgdasd_03122()
-    '''
+        
 class Pgdasd_03121(Base):
     __tablename__ = 'pgdasd_03121'
     
@@ -687,21 +627,9 @@ class Pgdasd_03130(Base):
         self.PGDASD_03130_VALOR_ISS       = line[15]
         self.PGDASD_03130_ALIQUOTA_PIS    = line[16]
         self.PGDASD_03130_VALOR_PIS       = line[17]         
-        
-        '''self.Pgdasd_03131.PGDASD_03000_CNPJ            = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03131.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        self.Pgdasd_03131.PGDASD_03130_ID            = self.PGDASD_03130_ID #Verificar se vai dar erro aqui
-        
-        self.Pgdasd_03132.PGDASD_03000_CNPJ            = self.PGDASD_03000_CNPJ #Verificar se vai dar erro aqui
-        self.Pgdasd_03132.PGDASD_03100_TIPO          = self.PGDASD_03100_TIPO #Verificar se vai dar erro aqui
-        self.Pgdasd_03132.PGDASD_03130_ID            = self.PGDASD_03130_ID #Verificar se vai dar erro aqui   
-        '''       
+                
         return self
 
-    '''def __init__(self):
-        self.Pgdasd_03131 = Pgdasd_03131()
-        self.Pgdasd_03132 = Pgdasd_03132()
-    '''
 class Pgdasd_03131(Base):
     __tablename__ = 'pgdasd_03131'
         

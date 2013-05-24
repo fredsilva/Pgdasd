@@ -22,14 +22,14 @@ class File():
         '''
         Verifica se existem arquivos no diretório, se houver, descompacta-os e realiza a importação
         '''        
-        self.extractAllFiles(url)
-        self.separatorRegTO(url, 'TO')
-        '''url = "arquivos/"
+        #self.extractAllFiles(url)
+        #self.separatorRegTO(url, 'TO')
+        #url = "arquivos/"
         for (path, dirs, files) in os.walk(url):            
             for file in files:                                                                                          
-                arquivo = File()                            
-                arquivo.importFile(url, file)
-        '''
+                fileOriginal = File()                            
+                fileOriginal.importFile(url, file)
+        
     def removeAllFiles(self, url):
         '''
         Remove todos os arquivos do diretório após a importação
@@ -45,17 +45,15 @@ class File():
         for (path, dirs, files) in os.walk(url):
             for file in files:
                 if file.endswith('.zip'):
-                    arquivo = zipfile.ZipFile(os.path.join(url,file),'r')
-                    arquivo.extractall(url)
-                    arquivo.close()
-                    shutil.move(os.path.join(url,file), os.path.join("compactados/",file))
-                    #self.moveAllFiles(url, 'arquivos', ('.txt'))                        
-        #self.moveAllFiles(url, 'arquivos/', ('.txt'))
+                    fileOriginal = zipfile.ZipFile(os.path.join(url,file),'r')
+                    fileOriginal.extractall(url)
+                    fileOriginal.close()
+                    shutil.move(os.path.join(url,file), os.path.join("compactados/",file))                    
                                             
     
     def contLinesFile(self, url):
         '''
-        Retorna a quantidade de linhas de um arquivo
+        Retorna a quantidade de linhas de um fileOriginal
         '''
         file = open(url,'r')
         lines = file.readlines()
@@ -67,47 +65,42 @@ class File():
     def separatorRegTO(self, url, stateReg):
         '''
         Extrai somente os registros do PGDASD referentes a contribuintes do Estado do Tocantins
+        
+        OBS: O problema está ocorrendo á partir da linha 38020 do fileOriginal: 01-2015-PGDASD-20120312-01-TO.txt 
         '''
         for(path, dirs, files) in os.walk(url):
             for file in files:
-                arquivo = open(os.path.join(url,file),'r')                
-                newArquivo = open(os.path.join('arquivos/',file),'w')        
-                lines = arquivo.readlines()        
+                fileOriginal = open(os.path.join(url,file),'r')                
+                newFile = open(os.path.join('arquivos/',file),'w')        
+                lines = fileOriginal.readlines()        
                 
                 i = 0
                 quantLines = 0
-                linhaTemp = []
-                linhaTemp03110 = []
-                achou = False
-                newArquivo.write(lines[0])                     
+                lineTemp = []                
+                foundState03110 = False
+                foundState03000 = False
+                newFile.write(lines[0])                     
                 for line in lines:                     
-                    linhaTemp.append(line)                               
+                    lineTemp.append(line)                               
                     if line[0:5] == '03000':
                         state = line[21:23]
-                        print(state)                                              
+                        if state == stateReg:
+                            foundState03000 = True                                    
+                    if line[0:5] == '03110' and state != stateReg:                                                                    
+                        if line[6:8] == stateReg:
+                            foundState03110 = True
                     if line[0:5] == '99999':                
-                        if state == stateReg: # Estado que se deseja filtrar. Neste caso TO                    
-                            newArquivo.writelines(linhaTemp)
-                            quantLines += len(linhaTemp)                                              
-                        else:
-                            #Verifica se existe o estado no registro 03110
-                            if line[0:5] == '03110':
-                                newState = line[7:9]
-                                linhaTemp03110.append(line)#Grava as linhas 03110
-                                if newState == stateReg:
-                                    achou = True
-                            if line[0:5] != '03110' and achou:
-                                newArquivo.writelines(linhaTemp03110)
-                                achou = False
-                                linhaTemp03110 = []
-                                
-                            #linhaTemp = []                
-                        linhaTemp = []                                                            
+                        if foundState03000 or foundState03110: #Se existe registro TO no campo 03000 ou 03110                     
+                            newFile.writelines(lineTemp)
+                            quantLines += len(lineTemp)                                                     
+                        lineTemp = []   
+                        foundState03110 = False             
+                        foundState03000 = False                                  
                     i = i+1                            
-                newArquivo.write('ZZZZZ|'+str(quantLines+2))                            
-                newArquivo.write('\n')
-                arquivo.close()
-                newArquivo.close()                
+                newFile.write('ZZZZZ|'+str(quantLines+2))                            
+                newFile.write('\n')
+                fileOriginal.close()
+                newFile.close()                
                                                         
         self.removeAllFiles(url)       
         
@@ -119,9 +112,9 @@ class File():
         '''
         for(path, dirs, files) in os.walk(url):
             for file in files:
-                arquivo = open(os.path.join(url,file),'r')                
+                fileOriginal = open(os.path.join(url,file),'r')                
                 newArquivo = open(os.path.join('arquivos/',file),'w')        
-                lines = arquivo.readlines()        
+                lines = fileOriginal.readlines()        
                 
                 i = 0
                 quantLines = 0
@@ -143,7 +136,7 @@ class File():
                     i = i+1                            
                 newArquivo.write('ZZZZZ|'+str(quantLines+2))                            
                 newArquivo.write('\n')
-                arquivo.close()
+                fileOriginal.close()
                 newArquivo.close()                
                                                         
         self.removeAllFiles(url)         
@@ -151,10 +144,10 @@ class File():
     
     def getFileName(self, file):
         '''
-        Retorna o nome do arquivo sem a extensão
+        Retorna o nome do fileOriginal sem a extensão
         '''
         fileName = re.split('[/]', file) # Separa a string pelas barras
-        fileName = fileName[len(fileName)-1].split('.')[0] # pega o nome do arquivo sem a extensão       
+        fileName = fileName[len(fileName)-1].split('.')[0] # pega o nome do fileOriginal sem a extensão       
         return fileName
     
     def moveAllFiles(self, src, dest, exts):
@@ -180,7 +173,7 @@ class File():
                                                                                                                   
             i = 0                    
             while i < len(lines):                                                                                
-                line = lines[i].replace("\n","").replace(",",".").split("|") # ler a linha do arquivo, retira os \n e troca , por .                        
+                line = lines[i].replace("\n","").replace(",",".").split("|") # ler a linha do fileOriginal, retira os \n e troca , por .                        
                 if line[0] == '00000':                                                        
                     id_02000 = 0
                     #id_03000 = 0
@@ -290,8 +283,8 @@ class File():
             shutil.move(url, os.path.join("importados/",file))                                                       
         #except: 
             #print("Problemas na linha: "+str(i+1))
-            #print ('Erro ao abrir o arquivo')
-            #shutil.move(url, "erro/"+file) # Move arquivo para o diretório erro
+            #print ('Erro ao abrir o fileOriginal')
+            #shutil.move(url, "erro/"+file) # Move fileOriginal para o diretório erro
                                                 
                                 
 
@@ -301,21 +294,18 @@ class Banco():
         
         try:
             engine = create_engine('oracle://siatdesv:desenvolvimento@dbserver')            
+            #engine = create_engine('oracle://treina:treinamento@dbserver')
             Session = sessionmaker(bind=engine)
             session = Session()
             session.add(pgdasd)            
             session.commit()            
             print("Gravando "+pgdasd.__tablename__+" - Linha: "+str(linha))                    
-        except:
+        except Exception as e:
             session.rollback()
-            print ('Declaração já existe')                           
-        
-if __name__ == "__main__":    
-    arquivo = File()    
-    url = "recebidos/"       
-    arquivo.hasNewFile(url)  
-    #arquivo.separatorRegTO(url)     
-    #arquivo.removeAllFiles(url)
-    #arquivo.moveAllFiles('testes/', 'arquivos/', ('.tar.gz', 'tmp'))      
-    #arquivo.getFileName('arquivos/meus arquivos/agora sim/fred.txt')
+            print ("Erro: "+str(e)+" na linha "+str(linha))                           
+    
+if __name__ == "__main__":        
+    fileOriginal = File()    
+    url = "arquivos/"       
+    fileOriginal.hasNewFile(url)      
     
