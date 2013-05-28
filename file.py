@@ -10,7 +10,9 @@ import os
 import shutil
 import zipfile
 import re
+from datetime import datetime
 from pgdasd import *
+from sqlalchemy import func
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -175,8 +177,7 @@ class File():
             while i < len(lines):                                                                                
                 line = lines[i].replace("\n","").replace(",",".").split("|") # ler a linha do fileOriginal, retira os \n e troca , por .                        
                 if line[0] == '00000':                                                        
-                    id_02000 = 0
-                    #id_03000 = 0
+                    id_02000 = 0                    
                     id_03110 = 0
                     id_03111 = 0
                     id_03112 = 0
@@ -189,9 +190,10 @@ class File():
                     id_04000 = 0
                     pgdasd = Pgdasd()
                     pgdasd = pgdasd.setPgdasd_00000(line)                          
-                    banco.insere(pgdasd, i+1)                         
-                if line[0] == '01000':
-                    #pgdasd.Pgdasd_01000 = pgdasd.Pgdasd_01000.setPgdasd_01000(line, pgdasd)
+                    banco.insere(pgdasd, i+1)
+                    print(pgdasd.PGDASD_00000_ID) 
+                    exit()                                         
+                if line[0] == '01000':                    
                     pgdasd_01000 = Pgdasd_01000()
                     pgdasd_01000.setPgdasd_01000(line, pgdasd)                                        
                     banco.insere(pgdasd_01000, i+1)                    
@@ -212,8 +214,7 @@ class File():
                     pgdasd_02000 = Pgdasd_02000()
                     pgdasd_02000.setPgdasd_02000(line, pgdasd, id_02000)                    
                     banco.insere(pgdasd_02000, i+1)
-                if line[0] == '03000':#Pode repetir
-                    #id_03000 = id_03000+1                    
+                if line[0] == '03000':#Pode repetir                                
                     pgdasd_03000 = Pgdasd_03000()
                     pgdasd_03000.setPgdasd_03000(line, pgdasd)                    
                     banco.insere(pgdasd_03000, i+1)
@@ -290,22 +291,47 @@ class File():
 
 class Banco():
     
-    def insere(self, pgdasd, linha):   
+    '''def consulta(self):
+        pgdasd = Pgdasd()
+        
+        pgdasd.PGDASD_00000_CNPJMATRIZ = '07864066000179'
+        engine = create_engine('oracle://treina:treinamento@dbserver')
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        s1 = session.query(Pgdasd).get(1)
+        print(s1)
+        '''
+        
+    
+    def insere(self, pgdasd, linha):           
         
         try:
-            engine = create_engine('oracle://siatdesv:desenvolvimento@dbserver')            
-            #engine = create_engine('oracle://treina:treinamento@dbserver')
+            #engine = create_engine('oracle://siatdesv:desenvolvimento@dbserver')            
+            engine = create_engine('oracle://treina:treinamento@dbserver')
             Session = sessionmaker(bind=engine)
             session = Session()
             session.add(pgdasd)            
             session.commit()            
-            print("Gravando "+pgdasd.__tablename__+" - Linha: "+str(linha))                    
+            print("Gravando "+pgdasd.__tablename__+" - Linha: "+str(linha))                           
         except Exception as e:
             session.rollback()
-            print ("Erro: "+str(e)+" na linha "+str(linha))                           
+            if not os.path.exists('erros/erros.txt'):
+                error = open('erros/erros.txt','w')
+                error.write("Erro: \n"+str(e)+"\nLinha: "+str(linha)+" - data/hora: "+str(datetime.now())+"\n\n")
+                error.close()
+            else:
+                errorOld = open('erros/erros.txt', 'r')
+                content = errorOld.readlines()
+                content.append("Erro: \n"+str(e)+"\nLinha: "+str(linha)+" - data/hora: "+str(datetime.now())+"\n\n")
+                error = open('erros/erros.txt','w')
+                error.writelines(content)
+                error.close()
+            print (str(e)+"\n Erro ocorrido na linha: "+str(linha)+" data/hora: "+str(datetime.now()))                                     
     
 if __name__ == "__main__":        
+    #banco = Banco()
+    #banco.consulta()
     fileOriginal = File()    
     url = "arquivos/"       
-    fileOriginal.hasNewFile(url)      
+    fileOriginal.hasNewFile(url)   
     
