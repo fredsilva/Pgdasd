@@ -103,44 +103,7 @@ class File():
                 fileOriginal.close()
                 newFile.close()                
                                                         
-        self.removeAllFiles(url)       
-        
-        
-        
-    def separatorRegTO2(self, url):
-        '''
-        Cópia de segurança do método separatorRegTO
-        '''
-        for(path, dirs, files) in os.walk(url):
-            for file in files:
-                fileOriginal = open(os.path.join(url,file),'r')                
-                newArquivo = open(os.path.join('arquivos/',file),'w')        
-                lines = fileOriginal.readlines()        
-                
-                i = 0
-                quantLines = 0
-                linhaTemp = []
-                newArquivo.write(lines[0])                     
-                for line in lines:                     
-                    linhaTemp.append(line)                               
-                    if line[0:5] == '03000':
-                        state = line[21:23]
-                        print(state)                                              
-                    if line[0:5] == '99999':                
-                        if state == 'TO':                    
-                            newArquivo.writelines(linhaTemp)
-                            quantLines += len(linhaTemp)                                              
-                        else:
-                            linhaTemp = []                
-                        
-                        linhaTemp = []                                                            
-                    i = i+1                            
-                newArquivo.write('ZZZZZ|'+str(quantLines+2))                            
-                newArquivo.write('\n')
-                fileOriginal.close()
-                newArquivo.close()                
-                                                        
-        self.removeAllFiles(url)         
+        self.removeAllFiles(url)                
                   
     
     def getFileName(self, file):
@@ -300,7 +263,6 @@ class Banco():
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
                 
-
     def insere(self, pgdasd, linha):
         try:            
             self.session.add(pgdasd)
@@ -323,6 +285,7 @@ class Banco():
             print (str(e)+"\n Erro ocorrido na linha: "+str(linha)+" data/hora: "+str(datetime.now()))
     
     def commit(self):
+        ''' Ainda na fase de testes '''
         self.session.commit()
         print("Commit")
 
