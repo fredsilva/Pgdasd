@@ -9,15 +9,16 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Numeric, ForeignKey
 
 Base = declarative_base()
+Base.schema = 'SIATTREI'
 SCHEMA = {'schema' : 'SIATTREI'}
 
+
 class Pgdasd(Base):
-    
-    __tablename__ = 'PGDASD'
+
+    __tablename__ = 'pgdasd'
     __table_args__ = SCHEMA
-    
-    PGDASD_00000_ID               = Column(Integer, primary_key = True, autoincrement=True)
-    PGDASD_00000_ID_DECLARACAO    = Column(String)
+        
+    PGDASD_00000_ID_DECLARACAO    = Column(String(17), primary_key = True)
     PGDASD_00000_NUM_RECIBO       = Column(String)
     PGDASD_00000_NUM_AUTENTICACAO = Column(String) 
     PGDASD_00000_DT_TRANSMISSAO   = Column(String)
@@ -60,12 +61,14 @@ class Pgdasd(Base):
         self.PGDASD_00000_RPA_EXT          = line[19]     
                 
         return self
+
+       
     
 class Pgdasd_01000(Base):
     __tablename__ = 'pgdasd_01000'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID             = Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))   
+    PGDASD_00000_ID_DECLARACAO  = Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))   
     PGDASD_01000_NRPAGTO        = Column(String, primary_key = True)
     PGDASD_01000_PRINC          = Column(Numeric(14,2))
     PGDASD_01000_MULTA          = Column(Numeric(14,2))
@@ -76,8 +79,8 @@ class Pgdasd_01000(Base):
     PGDASD_01000_VDAS           = Column(Numeric(14,2))
         
     
-    def setPgdasd_01000(self, line, pgdasd):                     
-        self.PGDASD_00000_ID             = pgdasd.PGDASD_00000_ID
+    def setPgdasd_01000(self, line, id_declaracao):                     
+        self.PGDASD_00000_ID_DECLARACAO  = id_declaracao
         self.PGDASD_01000_NRPAGTO        = line[1]
         self.PGDASD_01000_PRINC          = line[2]
         self.PGDASD_01000_MULTA          = line[3]
@@ -86,52 +89,68 @@ class Pgdasd_01000(Base):
         self.PGDASD_01000_DTVENC         = line[6]
         self.PGDASD_01000_DTVALCALC      = line[7]
         self.PGDASD_01000_VDAS           = line[8]        
+                
         return self
+    
+    '''def __init__(self, pgdasd):
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        print("Dentro da classe 01000: "+pgdasd.PGDASD_00000_ID_DECLARACAO)'''
 
 class Pgdasd_01500(Base):
     __tablename__  = 'pgdasd_01500'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID         =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_01500_RBSN_PA    = Column(String(6), primary_key = True)    
-    PGDASD_01500_RBSN_VALOR = Column(Numeric(14,2))
+    PGDASD_00000_ID_DECLARACAO  = Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_01500_RBSN_PA        = Column(String(6), primary_key = True)    
+    PGDASD_01500_RBSN_VALOR     = Column(Numeric(14,2))
         
     
-    def setPgdasd_01500(self, line, pgdasd):             
-        self.PGDASD_00000_ID             = pgdasd.PGDASD_00000_ID
-        self.PGDASD_00000_DT_TRANSMISSAO = pgdasd.PGDASD_00000_DT_TRANSMISSAO
-        self.PGDASD_00000_OPERACAO       = pgdasd.PGDASD_00000_OPERACAO               
+    def setPgdasd_01500(self, line, id_declaracao, data_transmissao, operacao):             
+        self.PGDASD_00000_ID_DECLARACAO  = id_declaracao
+        self.PGDASD_00000_DT_TRANSMISSAO = data_transmissao
+        self.PGDASD_00000_OPERACAO       = operacao               
         self.PGDASD_01500_RBSN_PA        = line[1]
-        self.PGDASD_01500_RBSN_VALOR     = line[2]            
+        self.PGDASD_01500_RBSN_VALOR     = line[2] 
+        #print("Dentro da Classe 01500: "+pgdasd.PGDASD_00000_ID_DECLARACAO)           
         return self         
     
+    '''def __init__(self, pgdasd):
+        self.PGDASD_00000_ID_DECLARACAO   = pgdasd.PGDASD_00000_ID_DECLARACAO
+        self.PGDASD_00000_DT_TRANSMISSAO = pgdasd.PGDASD_00000_DT_TRANSMISSAO
+        self.PGDASD_00000_OPERACAO        = pgdasd.PGDASD_00000_OPERACAO
+        print("De dentro da classe 01500: "+pgdasd.PGDASD_00000_DT_TRANSMISSAO)'''
+        
         
 class Pgdasd_01501(Base):
     __tablename__  = 'pgdasd_01501'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID         =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))    
-    PGDASD_01501_RBSN_PA    = Column(String(6), primary_key = True)    
-    PGDASD_01501_RBSN_VALOR = Column(Numeric(14,2))
+    PGDASD_00000_ID_DECLARACAO = Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))    
+    PGDASD_01501_RBSN_PA      = Column(String(6), primary_key = True)    
+    PGDASD_01501_RBSN_VALOR   = Column(Numeric(14,2))
         
     
-    def setPgdasd_01501(self, line, pgdasd):             
-        self.PGDASD_00000_ID         = pgdasd.PGDASD_00000_ID
-        self.PGDASD_01501_RBSN_PA    = line[1]
-        self.PGDASD_01501_RBSN_VALOR = line[2]            
+    def setPgdasd_01501(self, line, id_declaracao):             
+        self.PGDASD_00000_ID_DECLARACAO = id_declaracao
+        self.PGDASD_01501_RBSN_PA       = line[1]
+        self.PGDASD_01501_RBSN_VALOR    = line[2]        
         return self
+
+    '''def __init__(self, pgdasd):
+        self.PGDASD_00000_ID_DECLARACAO = pgdasd.PGDASD_00000_ID_DECLARACAO
+        print("De dentro da classe: "+pgdasd.PGDASD_00000_ID_DECLARACAO)'''
 
 class Pgdasd_01502(Base):
     __tablename__  = 'pgdasd_01502'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID             =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_00000_ID_DECLARACAO             =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
     PGDASD_01502_RBSN_EXT_PA    = Column(String(6), primary_key = True)    
     PGDASD_01502_RBSN_EXT_VALOR = Column(Numeric(14,2))
         
     
-    def setPgdasd_01502(self, line, pgdasd):                 
-        self.PGDASD_00000_ID             = pgdasd.PGDASD_00000_ID
+    def setPgdasd_01502(self, line, id_declaracao):                 
+        self.PGDASD_00000_ID_DECLARACAO  = id_declaracao
         self.PGDASD_01502_RBSN_EXT_PA    = line[1]
         self.PGDASD_01502_RBSN_EXT_VALOR = line[2]            
         return self
@@ -140,7 +159,7 @@ class Pgdasd_02000(Base):
     __tablename__  = 'pgdasd_02000'
     __table_args__ = SCHEMA
         
-    PGDASD_00000_ID            =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_00000_ID_DECLARACAO            =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
     PGDASD_02000_ID            = Column(Integer, primary_key = True)
     PGDASD_02000_RBT12         = Column(Numeric(14,2))
     PGDASD_02000_RBTAA         = Column(Numeric(14,2))
@@ -155,8 +174,8 @@ class Pgdasd_02000(Base):
     PGDASD_02000_RBTAA_EXTO    = Column(Numeric(14,2))
         
     
-    def setPgdasd_02000(self, line, pgdasd, id_02000):             
-        self.PGDASD_00000_ID            = pgdasd.PGDASD_00000_ID
+    def setPgdasd_02000(self, line, id_declaracao, id_02000):             
+        self.PGDASD_00000_ID_DECLARACAO = id_declaracao
         self.PGDASD_02000_ID            = id_02000 
         self.PGDASD_02000_RBT12         = line[1]
         self.PGDASD_02000_RBTAA         = line[2]
@@ -175,8 +194,8 @@ class Pgdasd_03000(Base):
     __tablename__  = 'pgdasd_03000'
     __table_args__ = SCHEMA
         
-    PGDASD_00000_ID                = Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    #PGDASD_03000_ID                = Column(Integer, primary_key = True)
+    PGDASD_00000_ID_DECLARACAO     = Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    #PGDASD_03000_ID               = Column(Integer, primary_key = True)
     PGDASD_03000_CNPJ              = Column(String(14), primary_key = True)
     PGDASD_03000_UF                = Column(String(2))
     PGDASD_03000_COD_TOM           = Column(String(4))
@@ -188,8 +207,8 @@ class Pgdasd_03000(Base):
     PGDASD_03000_PREX2             = Column(Numeric(4,10))
             
     
-    def setPgdasd_03000(self, line, pgdasd):                             
-        self.PGDASD_00000_ID                = pgdasd.PGDASD_00000_ID
+    def setPgdasd_03000(self, line, id_declaracao):                             
+        self.PGDASD_00000_ID_DECLARACAO    =  id_declaracao
         #self.PGDASD_03000_ID                = id_03000
         self.PGDASD_03000_CNPJ              = line[1]
         self.PGDASD_03000_UF                = line[2]
@@ -210,14 +229,14 @@ class Pgdasd_03100(Base):
     __tablename__  = 'pgdasd_03100'
     __table_args__ = SCHEMA
         
-    PGDASD_00000_ID      =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ      = Column(String, ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_00000_ID_DECLARACAO      =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ      = Column(String, ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
     PGDASD_03100_TIPO    = Column(String(2), primary_key = True)
     PGDASD_03100_VLTOTAL = Column(Numeric(14,2))
        
     
-    def setPgdasd_03100(self, line, pgdasd, pgdasd_03000):                       
-        self.PGDASD_00000_ID      = pgdasd.PGDASD_00000_ID
+    def setPgdasd_03100(self, line, id_declaracao, pgdasd_03000):                       
+        self.PGDASD_00000_ID_DECLARACAO = id_declaracao
         self.PGDASD_03000_CNPJ    = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO    = line[1]
         self.PGDASD_03100_VLTOTAL = line[2]   
@@ -228,9 +247,9 @@ class Pgdasd_03110(Base):
     __tablename__  = 'pgdasd_03110'
     __table_args__ = SCHEMA
         
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_00000_ID_DECLARACAO              =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
     PGDASD_03110_ID              = Column(Integer, primary_key = True)
     PGDASD_03110_UF              = Column(String(2))
     PGDASD_03110_COD_TOM         = Column(String(4))
@@ -265,9 +284,9 @@ class Pgdasd_03110(Base):
     PGDASD_03110_MAIORTRIBUTO    = Column(Numeric(14,3))
             
     
-    def setPgdasd_03110(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03110):
+    def setPgdasd_03110(self, line, id_declaracao, pgdasd_03000, pgdasd_03100, id_03110):
         
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_00000_ID_DECLARACAO    = id_declaracao
         self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         
@@ -310,10 +329,10 @@ class Pgdasd_03111(Base):
     __tablename__  = 'pgdasd_03111'
     __table_args__ = SCHEMA
         
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
-    PGDASD_03110_ID              = Column(Integer, ForeignKey('pgdasd_03110.PGDASD_03110_ID'))
+    PGDASD_00000_ID_DECLARACAO              =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03110_ID              = Column(Integer, ForeignKey(Base.schema+'.pgdasd_03110.PGDASD_03110_ID'))
     PGDASD_03111_ID              = Column(Integer, primary_key = True)
     PGDASD_03111_ALIQAPUR        = Column(Numeric(14,2))    
     PGDASD_03111_VLIMPOSTO       = Column(Numeric(14,2))    
@@ -336,9 +355,9 @@ class Pgdasd_03111(Base):
     PGDASD_03111_DIFERENCA       = Column(Numeric(14,2))
     PGDASD_03111_MAIORTRIBUTO    = Column(Numeric(14,3))
     
-    def setPgdasd_03111(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03110, id_03111):    
+    def setPgdasd_03111(self, line, id_declaracao, pgdasd_03000, pgdasd_03100, pgdasd_03110, id_03111):    
                 
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_00000_ID_DECLARACAO   = id_declaracao
         self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         self.PGDASD_03110_ID              = pgdasd_03110.PGDASD_03110_ID
@@ -369,10 +388,10 @@ class Pgdasd_03112(Base):
     __tablename__  = 'pgdasd_03112'
     __table_args__ = SCHEMA
         
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
-    PGDASD_03110_ID              = Column(Integer, ForeignKey('pgdasd_03110.PGDASD_03110_ID'))
+    PGDASD_00000_ID_DECLARACAO              =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03110_ID              = Column(Integer, ForeignKey(Base.schema+'.pgdasd_03110.PGDASD_03110_ID'))
     PGDASD_03112_ID              = Column(Integer, primary_key = True)
     PGDASD_03112_VALOR           = Column(Numeric(14,2))    
     PGDASD_03112_RED             = Column(Numeric(14,2))    
@@ -397,9 +416,9 @@ class Pgdasd_03112(Base):
     PGDASD_03112_VALOR_PIS       = Column(Numeric(14,3))
     PGDASD_03112_ALIQUOTA_PIS    = Column(Numeric(14,3))
     
-    def setPgdasd_03112(self, line,  pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03110, id_03112): 
+    def setPgdasd_03112(self, line,  id_declaracao, pgdasd_03000, pgdasd_03100, pgdasd_03110, id_03112): 
                 
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_00000_ID_DECLARACAO     = id_declaracao
         self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         self.PGDASD_03110_ID              = pgdasd_03110.PGDASD_03110_ID
@@ -432,9 +451,9 @@ class Pgdasd_03120(Base):
     __tablename__  = 'pgdasd_03120'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_00000_ID_DECLARACAO     =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
     PGDASD_03120_ID              = Column(Integer, primary_key = True)
     PGDASD_03120_ALIQAPUR        = Column(Numeric(14,2))
     PGDASD_03120_ALIQUOTA_COFINS = Column(Numeric(14,3))
@@ -455,10 +474,10 @@ class Pgdasd_03120(Base):
     PGDASD_03120_VALOR_PIS       = Column(Numeric(14,3))    
             
     
-    def setPgdasd_03120(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03120):   
+    def setPgdasd_03120(self, line, id_declaracao, pgdasd_03000, pgdasd_03100, id_03120):   
                 
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
-        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_00000_ID_DECLARACAO   = id_declaracao
+        self.PGDASD_03000_CNPJ            = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         
         self.PGDASD_03120_ID              = id_03120                  
@@ -486,10 +505,10 @@ class Pgdasd_03121(Base):
     __tablename__  = 'pgdasd_03121'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
-    PGDASD_03120_ID              = Column(Integer, ForeignKey('pgdasd_03120.PGDASD_03120_ID'))
+    PGDASD_00000_ID_DECLARACAO              =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03120_ID              = Column(Integer, ForeignKey(Base.schema+'.pgdasd_03120.PGDASD_03120_ID'))
     PGDASD_03121_ID              = Column(Integer, primary_key = True)
     PGDASD_03121_ALIQAPUR        = Column(Numeric(14,2))    
     PGDASD_03121_ALIQUOTA_COFINS = Column(Numeric(14,2))    
@@ -510,9 +529,9 @@ class Pgdasd_03121(Base):
     PGDASD_03121_VALOR_PIS       = Column(Numeric(14,3))
     
     
-    def setPgdasd_03121(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03120, id_03121):  
+    def setPgdasd_03121(self, line, id_declaracao, pgdasd_03000, pgdasd_03100, pgdasd_03120, id_03121):  
                 
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
+        self.PGDASD_00000_ID_DECLARACAO    = id_declaracao
         self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         self.PGDASD_03120_ID              = pgdasd_03120.PGDASD_03120_ID
@@ -541,10 +560,10 @@ class Pgdasd_03122(Base):
     __tablename__  = 'pgdasd_03122'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
-    PGDASD_03120_ID              = Column(Integer, ForeignKey('pgdasd_03120.PGDASD_03120_ID'))
+    PGDASD_00000_ID_DECLARACAO              =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03120_ID              = Column(Integer, ForeignKey(Base.schema+'.pgdasd_03120.PGDASD_03120_ID'))
     PGDASD_03122_ID              = Column(Integer, primary_key = True)
     PGDASD_03122_ALIQAPUR        = Column(Numeric(14,2))    
     PGDASD_03122_ALIQUOTA_COFINS = Column(Numeric(14,2))    
@@ -564,10 +583,10 @@ class Pgdasd_03122(Base):
     PGDASD_03122_ALIQUOTA_PIS    = Column(Numeric(14,3))
     PGDASD_03122_VALOR_PIS       = Column(Numeric(14,3))    
     
-    def setPgdasd_03122(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03120, id_03122):    
+    def setPgdasd_03122(self, line, id_declaracao, pgdasd_03000, pgdasd_03100, pgdasd_03120, id_03122):    
         
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
-        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_00000_ID_DECLARACAO   = id_declaracao
+        self.PGDASD_03000_CNPJ            = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         self.PGDASD_03120_ID              = pgdasd_03120.PGDASD_03120_ID
         
@@ -595,9 +614,9 @@ class Pgdasd_03130(Base):
     __tablename__  = 'pgdasd_03130'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_00000_ID_DECLARACAO              =  Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
     PGDASD_03130_ID              = Column(Integer, primary_key = True)
     PGDASD_03130_ALIQAPUR        = Column(Numeric(14,2))
     PGDASD_03130_ALIQUOTA_COFINS = Column(Numeric(14,3))
@@ -618,10 +637,10 @@ class Pgdasd_03130(Base):
     PGDASD_03130_VALOR_PIS       = Column(Numeric(14,3))
             
     
-    def setPgdasd_03130(self, line, pgdasd, pgdasd_03000, pgdasd_03100, id_03130):    
+    def setPgdasd_03130(self, line, id_declaracao, pgdasd_03000, pgdasd_03100, id_03130):    
                 
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
-        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_00000_ID_DECLARACAO   = id_declaracao
+        self.PGDASD_03000_CNPJ            = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         
         self.PGDASD_03130_ID              = id_03130                 
@@ -649,10 +668,10 @@ class Pgdasd_03131(Base):
     __tablename__  = 'pgdasd_03131'
     __table_args__ = SCHEMA
         
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
-    PGDASD_03130_ID              = Column(Integer, ForeignKey('pgdasd_03130.PGDASD_03130_ID'))
+    PGDASD_00000_ID_DECLARACAO   = Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ            = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03130_ID              = Column(Integer, ForeignKey(Base.schema+'.pgdasd_03130.PGDASD_03130_ID'))
     PGDASD_03131_ID              = Column(Integer, primary_key = True)
     PGDASD_03131_ALIQAPUR        = Column(Numeric(14,2))    
     PGDASD_03131_ALIQUOTA_COFINS = Column(Numeric(14,2))    
@@ -673,10 +692,10 @@ class Pgdasd_03131(Base):
     PGDASD_03131_VALOR_PIS       = Column(Numeric(14,3))
     
     
-    def setPgdasd_03131(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03130, id_03131):    
+    def setPgdasd_03131(self, line, id_declaracao, pgdasd_03000, pgdasd_03100, pgdasd_03130, id_03131):    
                 
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
-        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_00000_ID_DECLARACAO   = id_declaracao
+        self.PGDASD_03000_CNPJ            = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         self.PGDASD_03130_ID              = pgdasd_03130.PGDASD_03130_ID
            
@@ -704,10 +723,10 @@ class Pgdasd_03132(Base):
     __table_args__ = SCHEMA
     
     
-    PGDASD_00000_ID              =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03000_CNPJ              = Column(String(14), ForeignKey('pgdasd_03000.PGDASD_03000_CNPJ'))    
-    PGDASD_03100_TIPO            = Column(String(2), ForeignKey('pgdasd_03100.PGDASD_03100_TIPO'))
-    PGDASD_03130_ID              = Column(Integer, ForeignKey('pgdasd_03130.PGDASD_03130_ID'))
+    PGDASD_00000_ID_DECLARACAO   = Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03000_CNPJ            = Column(String(14), ForeignKey(Base.schema+'.pgdasd_03000.PGDASD_03000_CNPJ'))    
+    PGDASD_03100_TIPO            = Column(String(2), ForeignKey(Base.schema+'.pgdasd_03100.PGDASD_03100_TIPO'))
+    PGDASD_03130_ID              = Column(Integer, ForeignKey(Base.schema+'.pgdasd_03130.PGDASD_03130_ID'))
     PGDASD_03132_ID              = Column(Integer, primary_key = True)
     PGDASD_03132_ALIQAPUR        = Column(Numeric(14,2))    
     PGDASD_03132_ALIQUOTA_COFINS = Column(Numeric(14,2))    
@@ -728,10 +747,10 @@ class Pgdasd_03132(Base):
     PGDASD_03132_VALOR_PIS       = Column(Numeric(14,3))
     
     
-    def setPgdasd_03132(self, line, pgdasd, pgdasd_03000, pgdasd_03100, pgdasd_03130, id_03132):  
+    def setPgdasd_03132(self, line, id_declaracao, pgdasd_03000, pgdasd_03100, pgdasd_03130, id_03132):  
         
-        self.PGDASD_00000_ID              = pgdasd.PGDASD_00000_ID
-        self.PGDASD_03000_CNPJ              = pgdasd_03000.PGDASD_03000_CNPJ 
+        self.PGDASD_00000_ID_DECLARACAO   = id_declaracao
+        self.PGDASD_03000_CNPJ            = pgdasd_03000.PGDASD_03000_CNPJ 
         self.PGDASD_03100_TIPO            = pgdasd_03100.PGDASD_03100_TIPO
         self.PGDASD_03130_ID              = pgdasd_03130.PGDASD_03130_ID
         
@@ -759,15 +778,15 @@ class Pgdasd_03500(Base):
     __tablename__  = 'pgdasd_03500'
     __table_args__ = SCHEMA
     
-    PGDASD_00000_ID         =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
-    PGDASD_03500_FSSN_PA    = Column(String(6), primary_key = True)
-    PGDASD_03500_FSSN_VALOR = Column(Numeric(14,2))
+    PGDASD_00000_ID_DECLARACAO  = Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
+    PGDASD_03500_FSSN_PA                   = Column(String(6), primary_key = True)
+    PGDASD_03500_FSSN_VALOR                = Column(Numeric(14,2))
             
     
-    def setPgdasd_03500(self, line, pgdasd):                        
-        self.PGDASD_00000_ID         = pgdasd.PGDASD_00000_ID
-        self.PGDASD_03500_FSSN_PA    = line[1]
-        self.PGDASD_03500_FSSN_VALOR = line[2]
+    def setPgdasd_03500(self, line, id_declaracao):                        
+        self.PGDASD_00000_ID_DECLARACAO = id_declaracao
+        self.PGDASD_03500_FSSN_PA       = line[1]
+        self.PGDASD_03500_FSSN_VALOR    = line[2]
                                      
         return self
 
@@ -775,7 +794,7 @@ class Pgdasd_04000(Base):
     __tablename__  = 'pgdasd_04000'
     __table_args__ = SCHEMA
         
-    PGDASD_00000_ID            =  Column(Integer, ForeignKey('pgdasd.PGDASD_00000_ID'))
+    PGDASD_00000_ID_DECLARACAO = Column(String, ForeignKey(Base.schema+'.pgdasd.PGDASD_00000_ID_DECLARACAO'))
     PGDASD_04000_ID            = Column(Integer, primary_key = True)
     PGDASD_04000_CODRECP       = Column(String(4))
     PGDASD_04000_VALORPRINC    = Column(Numeric(14,2))
@@ -787,18 +806,18 @@ class Pgdasd_04000(Base):
     PGDASD_04000_CODMUNIC      = Column(String(4))
             
     
-    def setPgdasd_04000(self, line, pgdasd, id_04000):   
+    def setPgdasd_04000(self, line, id_declaracao, id_04000):   
           
-        self.PGDASD_00000_ID         = pgdasd.PGDASD_00000_ID         
-        self.PGDASD_04000_ID         = id_04000                 
-        self.PGDASD_04000_CODRECP    = line[1]
-        self.PGDASD_04000_VALORPRINC = line[2]
-        self.PGDASD_04000_CODRECM    = line[3]
-        self.PGDASD_04000_VALORM     = line[4]
-        self.PGDASD_04000_CODRECJ    = line[5]
-        self.PGDASD_04000_VALORJ     = line[6]
-        self.PGDASD_04000_UF         = line[7]
-        self.PGDASD_04000_CODMUNIC   = line[8]
+        self.PGDASD_00000_ID_DECLARACAO = id_declaracao         
+        self.PGDASD_04000_ID            = id_04000                 
+        self.PGDASD_04000_CODRECP       = line[1]
+        self.PGDASD_04000_VALORPRINC    = line[2]
+        self.PGDASD_04000_CODRECM       = line[3]
+        self.PGDASD_04000_VALORM        = line[4]
+        self.PGDASD_04000_CODRECJ       = line[5]
+        self.PGDASD_04000_VALORJ        = line[6]
+        self.PGDASD_04000_UF            = line[7]
+        self.PGDASD_04000_CODMUNIC      = line[8]
                                      
         return self
                 
